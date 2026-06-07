@@ -1,38 +1,38 @@
 async function saveToSheets() {
-                const url = state.gasUrl.trim();
-                if (!url) {
-                    showToast('Configure a URL do Apps Script primeiro!');
-                    return;
-                }
-                if (!state.result) return;
-
-                els.btnSave.disabled = true;
-                els.saveStatus.className = 'save-status saving';
-                els.saveStatus.innerHTML = '⏳ Enviando dados...';
-
-                try {
-                    // Apps Script nao suporta CORS headers customizados.
-                    // URLSearchParams envia como application/x-www-form-urlencoded
-                    // (requisicao simples) evitando o preflight OPTIONS.
-                    const params = new URLSearchParams();
-                    params.append('payload', JSON.stringify(state.result));
-
-                    await fetch(url, {
-                        method: 'POST',
-                        mode:   'no-cors',
-                        body:   params,
-                    });
-
-                    // Com no-cors a resposta e opaca (nao da para ler o body).
-                    // Assumimos sucesso se nao houve excecao de rede.
-                    els.saveStatus.className = 'save-status saved';
-                    els.saveStatus.innerHTML = '✓ Salvo no Google Sheets!';
-                    showToast('Treino salvo com sucesso!');
-
-                } catch (err) {
-                    els.saveStatus.className = 'save-status error';
-                    els.saveStatus.innerHTML = '✗ Erro: ' + err.message;
-                    showToast('Falha ao salvar: ' + err.message);
-                    els.btnSave.disabled = false;
-                }
-            }
+  const url = state.gasUrl.trim();
+  if (!url) {
+      showToast('Configure a URL do Apps Script primeiro!');
+      return;
+  }
+  if (!state.result) return;
+  
+  els.btnSave.disabled = true;
+  els.saveStatus.className = 'save-status saving';
+  els.saveStatus.innerHTML = '⏳ Enviando dados...';
+  
+  try {
+      // Apps Script nao suporta CORS headers customizados.
+      // URLSearchParams envia como application/x-www-form-urlencoded
+      // (requisicao simples) evitando o preflight OPTIONS.
+      const params = new URLSearchParams();
+      params.append('payload', JSON.stringify(state.result));
+  
+      await fetch(url, {
+          method: 'POST',
+          mode:   'no-cors',
+          body:   params,
+      });
+  
+      // Com no-cors a resposta e opaca (nao da para ler o body).
+      // Assumimos sucesso se nao houve excecao de rede.
+      els.saveStatus.className = 'save-status saved';
+      els.saveStatus.innerHTML = '✓ Salvo no Google Sheets!';
+      showToast('Treino salvo com sucesso!');
+  
+  } catch (err) {
+      els.saveStatus.className = 'save-status error';
+      els.saveStatus.innerHTML = '✗ Erro: ' + err.message;
+      showToast('Falha ao salvar: ' + err.message);
+      els.btnSave.disabled = false;
+  }
+  }
