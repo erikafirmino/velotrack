@@ -18,6 +18,8 @@
                 --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
                 --border: #2a2a3a; --accent: #00e5ff; --accent2: #ff3d6b;
                 --text: #e8e8f0; --muted: #6b6b80; --success: #00ff9d; --warn: #ffaa00;
+                --sky1: #1a3a5c; --sky2: #2d6a8f; --sky3: #4a9aba;
+                --grass1: #1a3d1a; --grass2: #2d5e2d; --road: #8b7355;
                 --font-display: 'Bebas Neue', sans-serif;
                 --font-mono: 'DM Mono', monospace;
                 --font-body: 'Inter', sans-serif;
@@ -25,82 +27,363 @@
             }
             html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
             #app { min-height: 100dvh; display: flex; flex-direction: column; }
-            header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 0; }
-            .logo { font-family: var(--font-display); font-size: 28px; letter-spacing: 3px; color: var(--accent); text-shadow: 0 0 20px rgba(0,229,255,0.4); }
+            header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 0; position: relative; z-index: 10; }
+            .logo { font-family: var(--font-display); font-size: 24px; letter-spacing: 3px; color: var(--accent); text-shadow: 0 0 20px rgba(0,229,255,0.4); }
             .logo span { color: var(--text); opacity: 0.5; }
             .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); transition: all 0.4s ease; }
             .status-dot.connected { background: var(--success); box-shadow: 0 0 12px var(--success); animation: pdot 2s ease-in-out infinite; }
             .status-dot.training { background: var(--accent2); box-shadow: 0 0 12px var(--accent2); animation: pdot 1s ease-in-out infinite; }
             @keyframes pdot { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
-            .screen { display: none; flex: 1; flex-direction: column; padding: 24px; animation: fadeIn 0.4s ease; }
+            .screen { display: none; flex: 1; flex-direction: column; animation: fadeIn 0.4s ease; }
             .screen.active { display: flex; }
-            @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+            @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
-            /* CONNECT */
-            #screen-connect { align-items: center; justify-content: center; gap: 28px; text-align: center; }
-            .connect-icon { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; position: relative; }
+            /* ═══════════════════════════════
+               CONNECT SCREEN
+            ═══════════════════════════════ */
+            #screen-connect { align-items: center; justify-content: center; gap: 24px; text-align: center; padding: 24px; }
+            .connect-icon { width: 110px; height: 110px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; position: relative; }
             .connect-icon::before { content:''; position:absolute; inset:-2px; border-radius:50%; border:2px solid transparent; border-top-color:var(--accent); animation:spin 2s linear infinite; }
             @keyframes spin { to{transform:rotate(360deg)} }
-            .connect-icon svg { width: 48px; height: 48px; color: var(--accent); }
-            .connect-title { font-family: var(--font-display); font-size: 42px; letter-spacing: 4px; line-height: 1.1; }
-            .connect-sub { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 280px; }
-            .config-card { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 20px; display: flex; flex-direction: column; gap: 16px; }
-            .config-card label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; display: block; margin-bottom: 6px; }
-            input[type="number"], input[type="text"] { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); font-family: var(--font-mono); font-size: 16px; padding: 10px 14px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+            .connect-icon svg { width: 44px; height: 44px; color: var(--accent); }
+            .connect-title { font-family: var(--font-display); font-size: 38px; letter-spacing: 4px; line-height: 1.1; }
+            .connect-sub { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 280px; }
+            .config-card { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+            .config-card label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; display: block; margin-bottom: 5px; }
+            input[type="number"], input[type="text"] { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); font-family: var(--font-mono); font-size: 15px; padding: 10px 13px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
             input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,229,255,0.1); }
-            .no-bt-banner { display: none; background: rgba(255,61,107,0.1); border: 1px solid var(--accent2); border-radius: var(--r); padding: 12px 16px; font-size: 13px; color: var(--accent2); line-height: 1.5; }
-
-            /* BUTTONS */
-            .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px 24px; border-radius: var(--r-lg); font-family: var(--font-display); font-size: 20px; letter-spacing: 3px; cursor: pointer; border: none; transition: all 0.2s ease; }
+            .no-bt-banner { display: none; background: rgba(255,61,107,0.1); border: 1px solid var(--accent2); border-radius: var(--r); padding: 10px 14px; font-size: 12px; color: var(--accent2); line-height: 1.5; }
+            .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 15px 20px; border-radius: var(--r-lg); font-family: var(--font-display); font-size: 19px; letter-spacing: 3px; cursor: pointer; border: none; transition: all 0.2s ease; }
             .btn-primary { background: var(--accent); color: #000; box-shadow: 0 0 30px rgba(0,229,255,0.25); }
             .btn-primary:hover { box-shadow: 0 0 40px rgba(0,229,255,0.4); transform: translateY(-1px); }
-            .btn-danger { background: var(--accent2); color: #fff; box-shadow: 0 0 30px rgba(255,61,107,0.25); }
+            .btn-danger { background: var(--accent2); color: #fff; box-shadow: 0 0 20px rgba(255,61,107,0.2); }
             .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
             .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
             .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-            /* TRAINING */
-            #screen-training { gap: 16px; }
-            .timer-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--surface); border-radius: var(--r); border: 1px solid var(--border); }
-            .timer-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
-            #display-time { font-family: var(--font-display); font-size: 36px; letter-spacing: 4px; }
-            .metric-hero { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 28px 24px 20px; text-align: center; }
-            .metric-hero-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
-            .metric-hero-value { font-family: var(--font-display); font-size: 96px; line-height: 1; color: var(--accent); text-shadow: 0 0 40px rgba(0,229,255,0.35); letter-spacing: 2px; transition: color 0.3s; }
-            .metric-hero-unit { font-family: var(--font-mono); font-size: 14px; color: var(--muted); margin-top: 4px; }
-            .speed-bar-wrap { margin-top: 16px; height: 3px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
-            .speed-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; width: 0%; transition: width 0.8s ease; }
-            .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-            .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 20px 16px; text-align: center; }
-            .metric-card-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
-            .metric-card-value { font-family: var(--font-display); font-size: 42px; line-height: 1; letter-spacing: 1px; }
-            .metric-card-unit { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
-            .rpm-strip { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); }
-            .rpm-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--muted); white-space: nowrap; }
-            .rpm-dots { display: flex; gap: 4px; flex: 1; }
-            .rpm-dot { flex: 1; height: 3px; border-radius: 99px; background: var(--border); transition: background 0.3s; }
-            .rpm-dot.lit { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
-            #rpm-val { font-family: var(--font-mono); font-size: 13px; min-width: 40px; text-align: right; }
-            .controls { display: flex; gap: 12px; margin-top: auto; padding-top: 8px; }
-            .controls .btn { font-size: 16px; letter-spacing: 2px; padding: 14px 20px; }
+            /* ═══════════════════════════════
+               TRAINING SCREEN — SIMULATOR
+            ═══════════════════════════════ */
+            #screen-training { gap: 0; position: relative; overflow: hidden; }
 
-            /* SUMMARY */
-            #screen-summary { gap: 20px; }
-            .summary-header { text-align: center; padding: 8px 0; }
-            .summary-title { font-family: var(--font-display); font-size: 48px; letter-spacing: 5px; color: var(--success); text-shadow: 0 0 30px rgba(0,255,157,0.3); }
-            .summary-date { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; color: var(--muted); margin-top: 4px; }
-            .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-            .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 20px 16px; text-align: center; }
+            /* ── Cena 3D ── */
+            .scene {
+                width: 100%;
+                height: 240px;
+                max-height: 240px;
+                overflow: hidden;
+                flex-shrink: 0;
+                background: #1a0a2e;
+                display: block;
+            }
+            .scene > *:not(#scene-svg) { display: none !important; }
+
+            /* Céu */
+            .sky {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(180deg, #0d1f35 0%, #1a4a6e 50%, #2d7a9a 100%);
+            }
+
+            /* Sol */
+            .sun {
+                position: absolute;
+                top: 18px;
+                right: 40px;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                background: radial-gradient(circle, #ffe066 0%, #ffaa00 60%, transparent 100%);
+                box-shadow: 0 0 30px rgba(255,200,0,0.5);
+            }
+
+            /* Nuvens */
+            .cloud {
+                position: absolute;
+                background: rgba(255,255,255,0.15);
+                border-radius: 50px;
+                animation: cloudMove linear infinite;
+            }
+            .cloud::before, .cloud::after {
+                content: '';
+                position: absolute;
+                background: rgba(255,255,255,0.15);
+                border-radius: 50%;
+            }
+            .cloud-1 { width: 80px; height: 18px; top: 22px; animation-duration: 18s; }
+            .cloud-1::before { width: 30px; height: 25px; top: -12px; left: 12px; }
+            .cloud-1::after  { width: 22px; height: 20px; top: -8px; left: 38px; }
+            .cloud-2 { width: 60px; height: 14px; top: 38px; animation-duration: 24s; animation-delay: -8s; opacity: 0.7; }
+            .cloud-2::before { width: 22px; height: 18px; top: -9px; left: 10px; }
+            .cloud-2::after  { width: 16px; height: 14px; top: -6px; left: 28px; }
+            .cloud-3 { width: 50px; height: 12px; top: 15px; animation-duration: 30s; animation-delay: -15s; opacity: 0.5; }
+            @keyframes cloudMove { from { left: 110%; } to { left: -20%; } }
+
+            /* Montanhas ao fundo */
+            .mountains {
+                position: absolute;
+                bottom: 72px;
+                left: 0; right: 0;
+                height: 60px;
+            }
+            .mountains svg { width: 100%; height: 100%; }
+
+            /* Faixa de grama (fundo) */
+            .grass-back {
+                position: absolute;
+                bottom: 65px;
+                left: 0; right: 0;
+                height: 20px;
+                background: linear-gradient(180deg, #1a4a1a 0%, #2d6e2d 100%);
+            }
+
+            /* Árvores */
+            .trees {
+                position: absolute;
+                bottom: 65px;
+                left: 0;
+                width: 200%;
+                height: 55px;
+                display: flex;
+                align-items: flex-end;
+                gap: 0;
+            }
+            .trees.layer1 { animation: treesMove linear infinite; }
+            .trees.layer2 { animation: treesMove2 linear infinite; bottom: 70px; opacity: 0.6; transform: scaleX(0.7); }
+
+            @keyframes treesMove  { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+            @keyframes treesMove2 { from { transform: translateX(-10%); } to { transform: translateX(-60%); } }
+
+            .tree {
+                flex-shrink: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .tree-top {
+                width: 0; height: 0;
+                border-left: solid transparent;
+                border-right: solid transparent;
+                border-bottom: solid #1a5e1a;
+            }
+            .tree-top2 {
+                width: 0; height: 0;
+                border-left: solid transparent;
+                border-right: solid transparent;
+                border-bottom: solid #236e23;
+                margin-top: -4px;
+            }
+            .tree-trunk {
+                background: #5a3a1a;
+                border-radius: 1px;
+            }
+
+            /* Estrada */
+            .road-wrap {
+                position: absolute;
+                bottom: 0;
+                left: 0; right: 0;
+                height: 70px;
+                overflow: hidden;
+            }
+            .road-bg {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(180deg, #6b5a3a 0%, #8b7355 40%, #a08b6a 100%);
+            }
+
+            /* Perspectiva da estrada */
+            .road-perspective {
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100%;
+                height: 100%;
+            }
+
+            /* Faixas laterais da estrada */
+            .road-edge-left, .road-edge-right {
+                position: absolute;
+                bottom: 0;
+                width: 3px;
+                height: 100%;
+                background: rgba(255,255,255,0.3);
+            }
+            .road-edge-left  { left: 20%; }
+            .road-edge-right { right: 20%; }
+
+            /* Tracejado central animado */
+            .road-lines {
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 4px;
+                height: 200%;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .road-line {
+                width: 4px;
+                height: 20px;
+                background: rgba(255,255,255,0.6);
+                border-radius: 2px;
+                flex-shrink: 0;
+            }
+
+            /* Grama frente */
+            .grass-front {
+                position: absolute;
+                bottom: 65px;
+                left: 0; right: 0;
+                height: 10px;
+                background: linear-gradient(180deg, #2d7a2d 0%, #3a8a3a 100%);
+                z-index: 2;
+            }
+
+            /* Bicicleta */
+            .bike-wrap {
+                position: absolute;
+                bottom: 28px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 5;
+            }
+            .bike-svg {
+                width: 80px;
+                height: 52px;
+                filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+            }
+
+            /* Partículas de poeira */
+            .dust-container {
+                position: absolute;
+                bottom: 30px;
+                left: calc(50% - 50px);
+                z-index: 4;
+                pointer-events: none;
+            }
+            .dust {
+                position: absolute;
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background: rgba(160,139,106,0.6);
+                animation: dustFly 0.8s ease-out forwards;
+            }
+            @keyframes dustFly {
+                0%   { transform: translate(0,0) scale(1); opacity: 0.7; }
+                100% { transform: translate(-25px,-12px) scale(0); opacity: 0; }
+            }
+
+            /* HUD de velocidade */
+            .hud-speed {
+                position: absolute;
+                top: 10px;
+                left: 14px;
+                z-index: 10;
+                background: rgba(0,0,0,0.5);
+                border: 1px solid rgba(0,229,255,0.3);
+                border-radius: var(--r);
+                padding: 6px 12px;
+                backdrop-filter: blur(4px);
+            }
+            .hud-speed-val {
+                font-family: var(--font-display);
+                font-size: 32px;
+                color: var(--accent);
+                line-height: 1;
+                text-shadow: 0 0 15px rgba(0,229,255,0.5);
+            }
+            .hud-speed-unit { font-family: var(--font-mono); font-size: 9px; color: var(--muted); letter-spacing: 1px; }
+
+            /* HUD tempo */
+            .hud-time {
+                position: absolute;
+                top: 10px;
+                right: 14px;
+                z-index: 10;
+                background: rgba(0,0,0,0.5);
+                border: 1px solid rgba(255,255,255,0.1);
+                border-radius: var(--r);
+                padding: 6px 12px;
+                backdrop-filter: blur(4px);
+                text-align: right;
+            }
+            .hud-time-val { font-family: var(--font-display); font-size: 22px; letter-spacing: 2px; line-height: 1; }
+            .hud-time-label { font-family: var(--font-mono); font-size: 9px; color: var(--muted); letter-spacing: 1px; }
+
+            /* ── Painel inferior ── */
+            .dashboard {
+                flex: 1;
+                background: var(--bg);
+                padding: 12px 16px 16px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            /* Gráfico de velocidade */
+            .speed-chart-wrap {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--r-lg);
+                padding: 10px 12px 8px;
+            }
+            .speed-chart-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 6px;
+            }
+            .speed-chart-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+            #speed-chart-current { font-family: var(--font-mono); font-size: 11px; color: var(--accent); }
+            #speed-canvas { width: 100%; height: 50px; display: block; }
+
+            /* Métricas */
+            .metrics-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 8px;
+            }
+            .metric-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--r-lg);
+                padding: 12px 10px;
+                text-align: center;
+            }
+            .metric-card-label { font-family: var(--font-mono); font-size: 8px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+            .metric-card-value { font-family: var(--font-display); font-size: 28px; line-height: 1; letter-spacing: 1px; }
+            .metric-card-unit  { font-family: var(--font-mono); font-size: 9px; color: var(--muted); margin-top: 1px; }
+
+            /* Controles */
+            .controls { display: flex; gap: 10px; }
+            .controls .btn { font-size: 15px; letter-spacing: 2px; padding: 13px 16px; }
+
+            /* ═══════════════════════════════
+               SUMMARY SCREEN
+            ═══════════════════════════════ */
+            #screen-summary { gap: 16px; padding: 20px; }
+            .summary-header { text-align: center; padding: 4px 0; }
+            .summary-title { font-family: var(--font-display); font-size: 44px; letter-spacing: 5px; color: var(--success); text-shadow: 0 0 30px rgba(0,255,157,0.3); }
+            .summary-date  { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; color: var(--muted); margin-top: 4px; }
+            .summary-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+            .summary-card  { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 18px 14px; text-align: center; }
             .summary-card.wide { grid-column: 1 / -1; }
-            .summary-card-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
-            .summary-card-value { font-family: var(--font-display); font-size: 52px; line-height: 1; letter-spacing: 1px; }
-            .summary-card.wide .summary-card-value { font-size: 68px; color: var(--accent); text-shadow: 0 0 30px rgba(0,229,255,0.3); }
-            .summary-card-unit { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 4px; }
-            .save-status { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); font-family: var(--font-mono); font-size: 12px; color: var(--muted); min-height: 46px; }
-            .save-status.saving { color: var(--warn); border-color: var(--warn); }
-            .save-status.saved { color: var(--success); border-color: var(--success); }
-            .save-status.error { color: var(--accent2); border-color: var(--accent2); }
-            #toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--font-mono); font-size: 13px; padding: 12px 20px; border-radius: var(--r); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index: 1000; white-space: nowrap; pointer-events: none; }
+            .summary-card-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+            .summary-card-value { font-family: var(--font-display); font-size: 46px; line-height: 1; }
+            .summary-card.wide .summary-card-value { font-size: 60px; color: var(--accent); text-shadow: 0 0 25px rgba(0,229,255,0.3); }
+            .summary-card-unit { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 3px; }
+            .save-status { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); font-family: var(--font-mono); font-size: 12px; color: var(--muted); min-height: 44px; }
+            .save-status.saving { color: var(--warn);    border-color: var(--warn); }
+            .save-status.saved  { color: var(--success); border-color: var(--success); }
+            .save-status.error  { color: var(--accent2); border-color: var(--accent2); }
+
+            /* Toast */
+            #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--font-mono); font-size: 12px; padding: 10px 18px; border-radius: var(--r); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index: 1000; white-space: nowrap; pointer-events: none; }
             #toast.show { transform: translateX(-50%) translateY(0); }
         </style>
     </head>
@@ -111,7 +394,7 @@
                 <div id="status-dot" class="status-dot"></div>
             </header>
 
-            <!-- CONNECT -->
+            <!-- ══ CONNECT ══ -->
             <section id="screen-connect" class="screen active">
                 <div class="connect-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -121,9 +404,7 @@
                 </div>
                 <div class="connect-title">PRONTO<br>PARA<br>PEDALAR?</div>
                 <div class="connect-sub">Conecte seu sensor CSC via Bluetooth e comece a registrar seu treino em tempo real.</div>
-                <div id="no-bt-banner" class="no-bt-banner">
-                    Modo demo ativo — Web Bluetooth nao disponivel neste navegador. Use o Google Chrome.
-                </div>
+                <div id="no-bt-banner" class="no-bt-banner">Modo demo ativo — use o Google Chrome para conectar o sensor.</div>
                 <div class="config-card">
                     <div>
                         <label>Circunferencia do pneu (mm)</label>
@@ -137,52 +418,138 @@
                 <button class="btn btn-primary" id="btn-connect">CONECTAR SENSOR</button>
             </section>
 
-            <!-- TRAINING -->
+            <!-- ══ TRAINING ══ -->
             <section id="screen-training" class="screen">
-                <div class="timer-bar">
-                    <span class="timer-label">TEMPO DE TREINO</span>
-                    <span id="display-time">00:00:00</span>
+
+                <!-- Cena simulador -->
+                <div class="scene">
+
+                    <svg id="scene-svg" width="100%" height="240" viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" style="display:block;width:100%;height:240px;max-height:240px;">
+                        <defs>
+                            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%"   stop-color="#1a0a2e"/>
+                                <stop offset="25%"  stop-color="#6b1f6b"/>
+                                <stop offset="55%"  stop-color="#c0472a"/>
+                                <stop offset="80%"  stop-color="#e8821a"/>
+                                <stop offset="100%" stop-color="#f5b942"/>
+                            </linearGradient>
+                            <radialGradient id="sunRad" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%"   stop-color="#fff9c0"/>
+                                <stop offset="40%"  stop-color="#ffcc00"/>
+                                <stop offset="100%" stop-color="#ff8800" stop-opacity="0.3"/>
+                            </radialGradient>
+                            <clipPath id="sceneclip"><rect width="400" height="240"/></clipPath>
+                        </defs>
+
+                        <!-- Ceu -->
+                        <rect width="400" height="240" fill="url(#sky)"/>
+
+                        <!-- Sol -->
+                        <circle cx="200" cy="145" r="55" fill="url(#sunRad)" opacity="0.3"/>
+                        <circle cx="200" cy="145" r="30" fill="#ffcc44" opacity="0.5"/>
+                        <circle cx="200" cy="145" r="16" fill="#fff4a0" opacity="0.95"/>
+                        <polygon points="197,145 203,145 228,240 172,240" fill="rgba(255,180,50,0.12)"/>
+
+                        <!-- Nuvens (animadas via JS) -->
+                        <g id="cloud1" opacity="0.55">
+                            <ellipse cx="80"  cy="26" rx="42" ry="13"  fill="#c05020" opacity="0.4"/>
+                            <ellipse cx="80"  cy="24" rx="42" ry="13"  fill="#ffb87a"/>
+                            <ellipse cx="46"  cy="19" rx="22" ry="16"  fill="#ffb87a"/>
+                            <ellipse cx="104" cy="20" rx="17" ry="13"  fill="white" opacity="0.6"/>
+                        </g>
+                        <g id="cloud2" opacity="0.4">
+                            <ellipse cx="260" cy="39" rx="28" ry="9"   fill="#c05020" opacity="0.4"/>
+                            <ellipse cx="260" cy="38" rx="28" ry="9"   fill="#e8907a"/>
+                            <ellipse cx="234" cy="33" rx="15" ry="11"  fill="#e8907a"/>
+                            <ellipse cx="278" cy="34" rx="11" ry="8"   fill="white" opacity="0.6"/>
+                        </g>
+                        <g id="cloud3" opacity="0.3">
+                            <ellipse cx="340" cy="19" rx="22" ry="7"   fill="#ffcc99"/>
+                            <ellipse cx="320" cy="15" rx="12" ry="9"   fill="#ffcc99"/>
+                        </g>
+
+                        <!-- Passaros (animados via JS) -->
+                        <g id="birds"></g>
+
+                        <!-- Montanhas -->
+                        <polygon points="0,145 55,73 125,113 200,63 270,97 340,77 400,93 400,145 0,145" fill="#1a0820" opacity="0.92"/>
+                        <polygon points="0,145 44,97 112,127 185,87 255,117 325,101 400,113 400,145 0,145" fill="#2a1030" opacity="0.75"/>
+                        <polyline points="0,145 44,97 112,127 185,87 255,117 325,101 400,113" stroke="rgba(255,140,40,0.3)" stroke-width="1.5" fill="none"/>
+
+                        <!-- Grama horizonte -->
+                        <rect x="0" y="143" width="400" height="8" fill="#1a3010"/>
+
+                        <!-- Estrada (geometria fixa, animacao nas faixas) -->
+                        <polygon id="road-poly" points="198,145 202,145 400,240 0,240" fill="#6b5535"/>
+                        <line x1="198" y1="145" x2="0"   y2="240" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                        <line x1="202" y1="145" x2="400" y2="240" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+
+                        <!-- Faixas tracejadas (animadas via JS) -->
+                        <g id="road-dashes"></g>
+
+                        <!-- Grama lateral -->
+                        <polygon points="0,151 198,151 0,240"   fill="#2a5a18"/>
+                        <polygon points="202,151 400,151 400,240" fill="#2a5a18"/>
+
+                        <!-- Arvores (animadas via JS) -->
+                        <g id="trees-group" clip-path="url(#sceneclip)"></g>
+
+                        <!-- HUD velocidade -->
+                        <rect x="16" y="8" width="86" height="44" rx="9" fill="rgba(0,0,0,0.65)" stroke="rgba(0,229,255,0.4)" stroke-width="1"/>
+                        <text id="hud-speed" x="22" y="40" fill="#00e5ff" font-size="26" font-family="'Bebas Neue',monospace" letter-spacing="2">0.0</text>
+                        <text x="22" y="50" fill="#6b6b80" font-size="7" font-family="monospace" letter-spacing="2">KM/H</text>
+
+                        <!-- HUD tempo -->
+                        <rect x="280" y="8" width="104" height="44" rx="9" fill="rgba(0,0,0,0.65)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+                        <text id="hud-time" x="284" y="32" fill="#e8e8f0" font-size="16" font-family="'Bebas Neue',monospace" letter-spacing="2">00:00:00</text>
+                        <text x="284" y="46" fill="#6b6b80" font-size="7" font-family="monospace" letter-spacing="2">TEMPO</text>
+                    </svg>
+
                 </div>
-                <div class="metric-hero">
-                    <div class="metric-hero-label">VELOCIDADE ATUAL</div>
-                    <div class="metric-hero-value" id="display-speed">0.0</div>
-                    <div class="metric-hero-unit">km/h</div>
-                    <div class="speed-bar-wrap"><div class="speed-bar" id="speed-bar"></div></div>
-                </div>
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <div class="metric-card-label">DISTANCIA</div>
-                        <div class="metric-card-value" id="display-dist">0.00</div>
-                        <div class="metric-card-unit">km</div>
+
+                <!-- Elementos hidden para compatibilidade JS -->
+                <span id="display-time"  style="display:none">00:00:00</span>
+                <span id="display-speed" style="display:none">0.0</span>
+
+                <!-- Dashboard -->
+                <div class="dashboard">
+                    <!-- Grafico de velocidade -->
+                    <div class="speed-chart-wrap">
+                        <div class="speed-chart-header">
+                            <span class="speed-chart-label">VELOCIDADE</span>
+                            <span id="speed-chart-current">-- km/h</span>
+                        </div>
+                        <canvas id="speed-canvas"></canvas>
                     </div>
-                    <div class="metric-card">
-                        <div class="metric-card-label">VEL. MEDIA</div>
-                        <div class="metric-card-value" id="display-avg">0.0</div>
-                        <div class="metric-card-unit">km/h</div>
+
+                    <!-- Metricas -->
+                    <div class="metrics-row">
+                        <div class="metric-card">
+                            <div class="metric-card-label">DIST</div>
+                            <div class="metric-card-value" id="display-dist">0.00</div>
+                            <div class="metric-card-unit">km</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-card-label">MEDIA</div>
+                            <div class="metric-card-value" id="display-avg">0.0</div>
+                            <div class="metric-card-unit">km/h</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-card-label">MAX</div>
+                            <div class="metric-card-value" id="display-max">0.0</div>
+                            <div class="metric-card-unit">km/h</div>
+                        </div>
                     </div>
-                    <div class="metric-card">
-                        <div class="metric-card-label">VOLTAS RODA</div>
-                        <div class="metric-card-value" id="display-rev">0</div>
-                        <div class="metric-card-unit">rev</div>
+
+                    <!-- Controles -->
+                    <div class="controls">
+                        <button class="btn btn-outline" id="btn-pause" style="flex:0 0 auto;width:auto;padding:13px 18px;">II</button>
+                        <button class="btn btn-danger" id="btn-finish">FINALIZAR</button>
                     </div>
-                    <div class="metric-card">
-                        <div class="metric-card-label">VEL. MAXIMA</div>
-                        <div class="metric-card-value" id="display-max">0.0</div>
-                        <div class="metric-card-unit">km/h</div>
-                    </div>
-                </div>
-                <div class="rpm-strip">
-                    <span class="rpm-label">RPM</span>
-                    <div class="rpm-dots" id="rpm-dots"></div>
-                    <span id="rpm-val">--</span>
-                </div>
-                <div class="controls">
-                    <button class="btn btn-outline" id="btn-pause" style="flex:0 0 auto;width:auto;padding:14px 20px;">pause</button>
-                    <button class="btn btn-danger" id="btn-finish">FINALIZAR</button>
                 </div>
             </section>
 
-            <!-- SUMMARY -->
+            <!-- ══ SUMMARY ══ -->
             <section id="screen-summary" class="screen">
                 <div class="summary-header">
                     <div class="summary-title">TREINO<br>CONCLUIDO</div>
@@ -224,10 +591,17 @@
         <div id="toast"></div>
 
         <script>
+            /* ══════════════════════════════════════════════════════
+               CONSTANTES
+            ══════════════════════════════════════════════════════ */
             const CSC_SERVICE_UUID          = 0x1816;
             const CSC_MEASUREMENT_CHAR_UUID = 0x2A5B;
             const MAX_SPEED_KMH             = 60;
+            const CHART_POINTS              = 40;
 
+            /* ══════════════════════════════════════════════════════
+               ESTADO
+            ══════════════════════════════════════════════════════ */
             const state = {
                 isConnected: false, isTraining: false, isPaused: false, isDemoMode: false,
                 btDevice: null, btChar: null,
@@ -237,8 +611,13 @@
                 prevRevs: null, prevEventTime: null,
                 demoInterval: null, demoRevAcc: 0, demoTimeAcc: 0,
                 result: null,
+                wakeLock: null,
+                speedHistory: [],
             };
 
+            /* ══════════════════════════════════════════════════════
+               DOM
+            ══════════════════════════════════════════════════════ */
             const $ = id => document.getElementById(id);
             const screens = { connect: $('screen-connect'), training: $('screen-training'), summary: $('screen-summary') };
             const els = {
@@ -246,39 +625,296 @@
                 inputCirc: $('input-circ'), inputGasUrl: $('input-gas-url'),
                 btnConnect: $('btn-connect'), displayTime: $('display-time'),
                 displaySpeed: $('display-speed'), displayDist: $('display-dist'),
-                displayAvg: $('display-avg'), displayRev: $('display-rev'),
-                displayMax: $('display-max'), speedBar: $('speed-bar'),
-                rpmDots: $('rpm-dots'), rpmVal: $('rpm-val'),
+                displayAvg: $('display-avg'), displayMax: $('display-max'),
                 btnPause: $('btn-pause'), btnFinish: $('btn-finish'),
                 summaryDate: $('summary-date'), sumDist: $('sum-dist'),
                 sumTime: $('sum-time'), sumAvg: $('sum-avg'),
                 sumMax: $('sum-max'), sumRev: $('sum-rev'),
                 saveStatus: $('save-status'), btnSave: $('btn-save'),
                 btnNew: $('btn-new'), toast: $('toast'),
+                speedChartCurrent: $('speed-chart-current'),
+                speedCanvas: $('speed-canvas'),
+                dustContainer: $('dust-container'),
             };
 
+            /* ══════════════════════════════════════════════════════
+               NAVEGACAO
+            ══════════════════════════════════════════════════════ */
             function showScreen(name) {
                 Object.entries(screens).forEach(([k, el]) => el.classList.toggle('active', k === name));
             }
 
             let toastTimer;
-            function showToast(msg, duration = 3000) {
+            function showToast(msg, dur = 3000) {
                 els.toast.textContent = msg;
                 els.toast.classList.add('show');
                 clearTimeout(toastTimer);
-                toastTimer = setTimeout(() => els.toast.classList.remove('show'), duration);
+                toastTimer = setTimeout(() => els.toast.classList.remove('show'), dur);
             }
 
+            /* ══════════════════════════════════════════════════════
+               ARVORES — gerador procedural
+            ══════════════════════════════════════════════════════ */
+            function makeTree(h, w) {
+                const t = document.createElement('div');
+                t.className = 'tree';
+                t.style.marginRight = Math.floor(Math.random() * 20 + 10) + 'px';
+
+                const t1 = document.createElement('div');
+                t1.className = 'tree-top';
+                t1.style.cssText = `border-left-width:${w*0.5}px;border-right-width:${w*0.5}px;border-bottom-width:${h*0.5}px;`;
+
+                const t2 = document.createElement('div');
+                t2.className = 'tree-top2';
+                t2.style.cssText = `border-left-width:${w*0.65}px;border-right-width:${w*0.65}px;border-bottom-width:${h*0.6}px;`;
+
+                const trunk = document.createElement('div');
+                trunk.className = 'tree-trunk';
+                trunk.style.cssText = `width:${Math.max(4,w*0.18)}px;height:${h*0.25}px;`;
+
+                t.appendChild(t1); t.appendChild(t2); t.appendChild(trunk);
+                return t;
+            }
+
+            function buildTrees(containerId, count, hMin, hMax) {
+                const c = $(containerId);
+                for (let i = 0; i < count; i++) {
+                    const h = hMin + Math.random() * (hMax - hMin);
+                    const w = h * 0.5;
+                    c.appendChild(makeTree(h, w));
+                }
+                // Duplica para loop infinito
+                const children = [...c.children];
+                children.forEach(ch => c.appendChild(ch.cloneNode(true)));
+            }
+
+
+
+            /* ══════════════════════════════════════════════════════
+               LINHAS DA ESTRADA
+            ══════════════════════════════════════════════════════ */
+
+
+            /* ══════════════════════════════════════════════════════
+               ANIMACAO DA CENA
+            ══════════════════════════════════════════════════════ */
+            let sceneRaf;
+            let wheelAngle = 0;
+            let pedalAngle = 0;
+            let legPhase   = 0;
+            let dustTimer  = 0;
+
+            /* ══════════════════════════════════════════════════════
+               ANIMACAO DA CENA — POr DO SOL
+            ══════════════════════════════════════════════════════ */
+            let sceneOff   = 0;
+            let birdPhase  = 0;
+            let lastTs     = performance.now();
+
+            function animateScene(ts) {
+                sceneRaf = requestAnimationFrame(animateScene);
+                const dt      = Math.min((ts - lastTs) / 1000, 0.05);
+                lastTs        = ts;
+                const spd     = state.currentSpeedKmh;
+                const factor  = spd / 55;
+                sceneOff     += factor * 200 * dt;
+                birdPhase    += dt;
+
+                const W = 400, H = 240, HY = 145, VX = 200;
+                const roadLX = y => VX * (1 - (y - HY) / (H - HY));
+                const roadRX = y => VX + VX * ((y - HY) / (H - HY));
+
+                // Nuvens
+                const clouds = [
+                    { el: document.getElementById('cloud1'), bx: 80,  sp: 0.1  },
+                    { el: document.getElementById('cloud2'), bx: 260, sp: 0.06 },
+                    { el: document.getElementById('cloud3'), bx: 340, sp: 0.13 },
+                ];
+                clouds.forEach(cl => {
+                    if (!cl.el) return;
+                    const cx = ((cl.bx - sceneOff * cl.sp) % (W + 120) + W + 120) % (W + 120) - 60;
+                    cl.el.setAttribute('transform', `translate(${cx - cl.bx}, 0)`);
+                });
+
+                // Passaros
+                const birdsG = document.getElementById('birds');
+                if (birdsG) {
+                    birdsG.innerHTML = '';
+                    for (let i = 0; i < 5; i++) {
+                        const bx  = ((i * 85 + 30 - sceneOff * 0.18) % (W + 60) + W + 60) % (W + 60) - 30;
+                        const by  = 28 + (i * 13) % 28;
+                        const sc  = 0.6 + (i * 0.17) % 0.5;
+                        const flap = Math.sin(birdPhase * 3 + i * 1.2) * 4 * sc;
+                        const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+                        g.setAttribute('transform', `translate(${bx},${by})`);
+                        g.setAttribute('opacity', '0.8');
+                        const p1 = document.createElementNS('http://www.w3.org/2000/svg','path');
+                        p1.setAttribute('d', `M0,0 Q${-7*sc},${flap} ${-14*sc},0`);
+                        p1.setAttribute('stroke','#2a0a1a');
+                        p1.setAttribute('stroke-width', 1.2*sc);
+                        p1.setAttribute('fill','none');
+                        const p2 = document.createElementNS('http://www.w3.org/2000/svg','path');
+                        p2.setAttribute('d', `M0,0 Q${7*sc},${flap} ${14*sc},0`);
+                        p2.setAttribute('stroke','#2a0a1a');
+                        p2.setAttribute('stroke-width', 1.2*sc);
+                        p2.setAttribute('fill','none');
+                        g.appendChild(p1); g.appendChild(p2);
+                        birdsG.appendChild(g);
+                    }
+                }
+
+                // Faixas tracejadas
+                const dashG = document.getElementById('road-dashes');
+                if (dashG) {
+                    dashG.innerHTML = '';
+                    for (let i = 0; i < 8; i++) {
+                        const frac = ((i / 8) + (sceneOff * 0.0022)) % 1;
+                        const y1   = HY + frac * (H - HY);
+                        const y2   = HY + Math.min(frac + 1/8/1.8, 1) * (H - HY);
+                        const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+                        line.setAttribute('x1', VX); line.setAttribute('y1', y1);
+                        line.setAttribute('x2', VX); line.setAttribute('y2', y2);
+                        line.setAttribute('stroke','rgba(255,255,255,0.7)');
+                        line.setAttribute('stroke-width', 1 + frac * 5);
+                        line.setAttribute('stroke-linecap','round');
+                        dashG.appendChild(line);
+                    }
+                }
+
+                // Arvores
+                const treesG = document.getElementById('trees-group');
+                if (treesG) {
+                    treesG.innerHTML = '';
+                    for (let i = 0; i < 10; i++) {
+                        const frac = ((i / 10) + (sceneOff * 0.0028)) % 1;
+                        const y    = HY + frac * (H - HY);
+                        const lx   = roadLX(y);
+                        const rx   = roadRX(y);
+                        const sc2  = 0.1 + frac * 0.9;
+                        const h    = (32 + (i * 11) % 18) * sc2;
+                        const dark = i % 2 === 0;
+                        const gap  = 5 + frac * 22;
+                        [[lx - gap - h * 0.3, y], [rx + gap, y]].forEach(([tx, ty], side) => {
+                            const g   = document.createElementNS('http://www.w3.org/2000/svg','g');
+                            g.setAttribute('transform', `translate(${tx},${ty})`);
+                            const w   = h * 0.55;
+                            const tw2 = Math.max(1.5, h * 0.1);
+                            const trunk = document.createElementNS('http://www.w3.org/2000/svg','rect');
+                            trunk.setAttribute('x', -tw2/2); trunk.setAttribute('y', 0);
+                            trunk.setAttribute('width', tw2); trunk.setAttribute('height', h*0.22);
+                            trunk.setAttribute('fill','#2a1a08');
+                            const b1 = document.createElementNS('http://www.w3.org/2000/svg','polygon');
+                            b1.setAttribute('points',`0,${-h*0.55} ${-w*0.65},0 ${w*0.65},0`);
+                            b1.setAttribute('fill', dark ? '#0f2a0f' : '#1a3a10');
+                            const b2 = document.createElementNS('http://www.w3.org/2000/svg','polygon');
+                            b2.setAttribute('points',`0,${-h*0.85} ${-w*0.5},${-h*0.35} ${w*0.5},${-h*0.35}`);
+                            b2.setAttribute('fill', dark ? '#162a12' : '#224015');
+                            g.appendChild(trunk); g.appendChild(b1); g.appendChild(b2);
+                            treesG.appendChild(g);
+                        });
+                    }
+                }
+
+                // HUD velocidade e tempo
+                const hudSpeed = document.getElementById('hud-speed');
+                const hudTime  = document.getElementById('hud-time');
+                const dispTime = document.getElementById('display-time');
+                if (hudSpeed) hudSpeed.textContent = state.currentSpeedKmh.toFixed(1);
+                if (hudTime && dispTime) hudTime.textContent = dispTime.textContent;
+            }
+
+
+
+            /* ══════════════════════════════════════════════════════
+               PARTICULAS DE POEIRA
+            ══════════════════════════════════════════════════════ */
+            function spawnDust() {
+                const d = document.createElement('div');
+                d.className = 'dust';
+                d.style.left = (Math.random() * 20) + 'px';
+                d.style.top  = (Math.random() * 6) + 'px';
+                els.dustContainer.appendChild(d);
+                setTimeout(() => d.remove(), 900);
+            }
+
+            /* ══════════════════════════════════════════════════════
+               GRAFICO DE VELOCIDADE (Canvas)
+            ══════════════════════════════════════════════════════ */
+            function drawSpeedChart() {
+                const canvas = els.speedCanvas;
+                const dpr    = window.devicePixelRatio || 1;
+                const rect   = canvas.getBoundingClientRect();
+                canvas.width  = rect.width  * dpr;
+                canvas.height = rect.height * dpr;
+                const ctx = canvas.getContext('2d');
+                ctx.scale(dpr, dpr);
+                const w = rect.width;
+                const h = rect.height;
+
+                ctx.clearRect(0, 0, w, h);
+
+                const history = state.speedHistory;
+                if (history.length < 2) return;
+
+                const maxVal = Math.max(MAX_SPEED_KMH, ...history) * 1.1;
+                const step   = w / (CHART_POINTS - 1);
+
+                // Grade
+                ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+                ctx.lineWidth   = 1;
+                for (let i = 0; i <= 3; i++) {
+                    const y = h - (i / 3) * h;
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+                }
+
+                // Gradiente da linha
+                const grad = ctx.createLinearGradient(0, 0, w, 0);
+                grad.addColorStop(0,   'rgba(0,229,255,0.3)');
+                grad.addColorStop(0.7, 'rgba(0,229,255,0.8)');
+                grad.addColorStop(1,   '#ff3d6b');
+
+                // Area preenchida
+                ctx.beginPath();
+                history.forEach((val, i) => {
+                    const x = i * step;
+                    const y = h - (val / maxVal) * h;
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                });
+                ctx.lineTo((history.length - 1) * step, h);
+                ctx.lineTo(0, h);
+                ctx.closePath();
+                ctx.fillStyle = 'rgba(0,229,255,0.08)';
+                ctx.fill();
+
+                // Linha
+                ctx.beginPath();
+                history.forEach((val, i) => {
+                    const x = i * step;
+                    const y = h - (val / maxVal) * h;
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                });
+                ctx.strokeStyle = grad;
+                ctx.lineWidth   = 2;
+                ctx.lineJoin    = 'round';
+                ctx.stroke();
+
+                // Ponto atual
+                const last = history[history.length - 1];
+                const lx   = (history.length - 1) * step;
+                const ly   = h - (last / maxVal) * h;
+                ctx.beginPath();
+                ctx.arc(lx, ly, 3, 0, Math.PI * 2);
+                ctx.fillStyle = '#ff3d6b';
+                ctx.fill();
+            }
+
+            /* ══════════════════════════════════════════════════════
+               BLUETOOTH
+            ══════════════════════════════════════════════════════ */
             if (!navigator.bluetooth) {
                 els.noBtBanner.style.display = 'block';
                 state.isDemoMode = true;
                 els.btnConnect.textContent = 'INICIAR DEMO';
-            }
-
-            for (let i = 0; i < 20; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'rpm-dot';
-                els.rpmDots.appendChild(dot);
             }
 
             async function connectBluetooth() {
@@ -325,6 +961,9 @@
                 processRevData(cumWheelRevs, lastWheelEvent);
             }
 
+            /* ══════════════════════════════════════════════════════
+               CALCULO CSC
+            ══════════════════════════════════════════════════════ */
             function processRevData(cumRevs, eventTime) {
                 if (state.prevRevs === null) { state.prevRevs = cumRevs; state.prevEventTime = eventTime; return; }
                 let deltaRevs = cumRevs - state.prevRevs;
@@ -343,12 +982,13 @@
                 state.totalRevs       = cumRevs;
                 state.currentSpeedKmh = speedKmh;
                 if (speedKmh > state.maxSpeedKmh) state.maxSpeedKmh = speedKmh;
-                const rpm = (deltaRevs / deltaTimeSec) * 60;
-                updateRpmDots(rpm);
-                els.rpmVal.textContent = Math.round(rpm) + ' rpm';
+                updateSpeedHistory(speedKmh);
                 updateTrainingDisplay();
             }
 
+            /* ══════════════════════════════════════════════════════
+               TIMER
+            ══════════════════════════════════════════════════════ */
             let timerInterval;
             function startTimer() {
                 clearInterval(timerInterval);
@@ -364,10 +1004,17 @@
 
             function formatTime(ms) {
                 const s = Math.floor(ms / 1000);
-                const h = Math.floor(s / 3600);
-                const m = Math.floor((s % 3600) / 60);
-                const sec = s % 60;
-                return [h, m, sec].map(n => String(n).padStart(2, '0')).join(':');
+                return [Math.floor(s/3600), Math.floor((s%3600)/60), s%60].map(n => String(n).padStart(2,'0')).join(':');
+            }
+
+            /* ══════════════════════════════════════════════════════
+               DISPLAY
+            ══════════════════════════════════════════════════════ */
+            function updateSpeedHistory(spd) {
+                state.speedHistory.push(spd);
+                if (state.speedHistory.length > CHART_POINTS) state.speedHistory.shift();
+                els.speedChartCurrent.textContent = spd.toFixed(1) + ' km/h';
+                drawSpeedChart();
             }
 
             function updateTrainingDisplay() {
@@ -380,40 +1027,40 @@
                 els.displayDist.textContent  = distKm.toFixed(2);
                 els.displayAvg.textContent   = avgKmh.toFixed(1);
                 els.displayMax.textContent   = state.maxSpeedKmh.toFixed(1);
-                els.displayRev.textContent   = state.totalRevs.toLocaleString('pt-BR');
-                const pct = Math.min((state.currentSpeedKmh / MAX_SPEED_KMH) * 100, 100);
-                els.speedBar.style.width = pct + '%';
             }
 
-            function updateRpmDots(rpm) {
-                const litCount = Math.round(Math.min(rpm / 120, 1) * 20);
-                els.rpmDots.querySelectorAll('.rpm-dot').forEach((dot, i) => dot.classList.toggle('lit', i < litCount));
-            }
-
+            /* ══════════════════════════════════════════════════════
+               CONTROLES
+            ══════════════════════════════════════════════════════ */
             function startTraining() {
                 state.isTraining = true; state.isPaused = false;
                 state.startTime  = Date.now(); state.pausedMs = 0;
                 state.totalDistM = 0; state.currentSpeedKmh = 0;
                 state.maxSpeedKmh = 0; state.totalRevs = 0;
                 state.prevRevs = null; state.prevEventTime = null;
+                state.speedHistory = [];
                 els.statusDot.className = 'status-dot training';
                 showScreen('training');
                 startTimer();
+                requestAnimationFrame(animateScene);
+                requestWakeLock();
                 if (state.isDemoMode) startDemo();
             }
 
             function pauseTraining() {
                 if (state.isPaused) {
-                    state.pausedMs  += Date.now() - state.pauseStart;
-                    state.isPaused   = false; state.pauseStart = null;
-                    els.btnPause.textContent    = 'pause';
-                    els.statusDot.className     = 'status-dot training';
+                    state.pausedMs += Date.now() - state.pauseStart;
+                    state.isPaused  = false; state.pauseStart = null;
+                    els.btnPause.textContent = 'II';
+                    els.statusDot.className  = 'status-dot training';
+                    requestWakeLock();
                     if (state.isDemoMode) startDemo();
                 } else {
-                    state.isPaused   = true; state.pauseStart = Date.now();
-                    state.currentSpeedKmh       = 0;
-                    els.btnPause.textContent    = 'play';
-                    els.statusDot.className     = 'status-dot connected';
+                    state.isPaused  = true; state.pauseStart = Date.now();
+                    state.currentSpeedKmh = 0;
+                    els.btnPause.textContent = '▶';
+                    els.statusDot.className  = 'status-dot connected';
+                    releaseWakeLock();
                     if (state.isDemoMode) stopDemo();
                 }
             }
@@ -421,7 +1068,9 @@
             function finishTraining() {
                 state.isTraining = false;
                 clearInterval(timerInterval);
+                cancelAnimationFrame(sceneRaf);
                 stopDemo();
+                releaseWakeLock();
                 const elapsedMs  = getElapsedMs();
                 const elapsedSec = elapsedMs / 1000;
                 const distKm     = state.totalDistM / 1000;
@@ -434,12 +1083,10 @@
                     maxKmh: parseFloat(state.maxSpeedKmh.toFixed(1)),
                     revs:   state.totalRevs,
                 };
-                const m   = Math.floor(elapsedMs / 60000);
-                const h   = Math.floor(m / 60);
-                const min = m % 60;
+                const m = Math.floor(elapsedMs / 60000);
                 els.summaryDate.textContent = state.result.date;
                 els.sumDist.textContent = state.result.distKm.toFixed(2);
-                els.sumTime.textContent = String(h).padStart(2,'0') + ':' + String(min).padStart(2,'0');
+                els.sumTime.textContent = String(Math.floor(m/60)).padStart(2,'0') + ':' + String(m%60).padStart(2,'0');
                 els.sumAvg.textContent  = state.result.avgKmh.toFixed(1);
                 els.sumMax.textContent  = state.result.maxKmh.toFixed(1);
                 els.sumRev.textContent  = state.result.revs.toLocaleString('pt-BR');
@@ -472,6 +1119,9 @@
                 }
             }
 
+            /* ══════════════════════════════════════════════════════
+               DEMO MODE
+            ══════════════════════════════════════════════════════ */
             function startDemo() {
                 stopDemo();
                 state.demoRevAcc  = state.prevRevs || 0;
@@ -491,6 +1141,41 @@
                 if (state.demoInterval) { clearInterval(state.demoInterval); state.demoInterval = null; }
             }
 
+            /* ══════════════════════════════════════════════════════
+               WAKELOCK — Tela sempre ativa
+            ══════════════════════════════════════════════════════ */
+            async function requestWakeLock() {
+                if ('wakeLock' in navigator) {
+                    try {
+                        state.wakeLock = await navigator.wakeLock.request('screen');
+                        state.wakeLock.addEventListener('release', () => {
+                            state.wakeLock = null;
+                        });
+                        console.log('WakeLock ativo');
+                    } catch (err) {
+                        console.warn('WakeLock nao disponivel:', err);
+                    }
+                }
+            }
+
+            async function releaseWakeLock() {
+                if (state.wakeLock) {
+                    await state.wakeLock.release();
+                    state.wakeLock = null;
+                    console.log('WakeLock liberado');
+                }
+            }
+
+            // Reativa o WakeLock se a aba voltar ao foco
+            document.addEventListener('visibilitychange', async () => {
+                if (document.visibilityState === 'visible' && state.isTraining && !state.isPaused) {
+                    await requestWakeLock();
+                }
+            });
+
+            /* ══════════════════════════════════════════════════════
+               EVENTOS
+            ══════════════════════════════════════════════════════ */
             els.btnConnect.addEventListener('click', () => {
                 state.circumferenceMm = parseInt(els.inputCirc.value) || 2180;
                 state.gasUrl          = els.inputGasUrl.value.trim();
@@ -509,12 +1194,14 @@
             els.btnSave.addEventListener('click', saveToSheets);
             els.btnNew.addEventListener('click', () => {
                 state.result = null; state.isConnected = false; state.isPaused = false;
-                stopDemo();
+                stopDemo(); cancelAnimationFrame(sceneRaf);
                 if (state.btChar) { state.btChar.stopNotifications().catch(()=>{}); state.btChar = null; }
                 if (state.btDevice && state.btDevice.gatt.connected) { state.btDevice.gatt.disconnect(); state.btDevice = null; }
                 els.statusDot.className = 'status-dot';
                 showScreen('connect');
             });
+
+            window.addEventListener('resize', drawSpeedChart);
 
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
