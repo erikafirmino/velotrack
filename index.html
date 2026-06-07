@@ -1,38 +1,521 @@
-async function saveToSheets() {
-  const url = state.gasUrl.trim();
-  if (!url) {
-      showToast('Configure a URL do Apps Script primeiro!');
-      return;
-  }
-  if (!state.result) return;
-  
-  els.btnSave.disabled = true;
-  els.saveStatus.className = 'save-status saving';
-  els.saveStatus.innerHTML = '⏳ Enviando dados...';
-  
-  try {
-      // Apps Script nao suporta CORS headers customizados.
-      // URLSearchParams envia como application/x-www-form-urlencoded
-      // (requisicao simples) evitando o preflight OPTIONS.
-      const params = new URLSearchParams();
-      params.append('payload', JSON.stringify(state.result));
-  
-      await fetch(url, {
-          method: 'POST',
-          mode:   'no-cors',
-          body:   params,
-      });
-  
-      // Com no-cors a resposta e opaca (nao da para ler o body).
-      // Assumimos sucesso se nao houve excecao de rede.
-      els.saveStatus.className = 'save-status saved';
-      els.saveStatus.innerHTML = '✓ Salvo no Google Sheets!';
-      showToast('Treino salvo com sucesso!');
-  
-  } catch (err) {
-      els.saveStatus.className = 'save-status error';
-      els.saveStatus.innerHTML = '✗ Erro: ' + err.message;
-      showToast('Falha ao salvar: ' + err.message);
-      els.btnSave.disabled = false;
-  }
-  }
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+        <meta name="theme-color" content="#0a0a0f" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="VeloTrack" />
+        <title>VeloTrack - Ciclismo Indoor</title>
+        <link rel="manifest" href="manifest.json" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+        <style>
+            *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+            :root {
+                --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
+                --border: #2a2a3a; --accent: #00e5ff; --accent2: #ff3d6b;
+                --text: #e8e8f0; --muted: #6b6b80; --success: #00ff9d; --warn: #ffaa00;
+                --font-display: 'Bebas Neue', sans-serif;
+                --font-mono: 'DM Mono', monospace;
+                --font-body: 'Inter', sans-serif;
+                --r: 8px; --r-lg: 16px;
+            }
+            html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+            #app { min-height: 100dvh; display: flex; flex-direction: column; }
+            header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 0; }
+            .logo { font-family: var(--font-display); font-size: 28px; letter-spacing: 3px; color: var(--accent); text-shadow: 0 0 20px rgba(0,229,255,0.4); }
+            .logo span { color: var(--text); opacity: 0.5; }
+            .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); transition: all 0.4s ease; }
+            .status-dot.connected { background: var(--success); box-shadow: 0 0 12px var(--success); animation: pdot 2s ease-in-out infinite; }
+            .status-dot.training { background: var(--accent2); box-shadow: 0 0 12px var(--accent2); animation: pdot 1s ease-in-out infinite; }
+            @keyframes pdot { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
+            .screen { display: none; flex: 1; flex-direction: column; padding: 24px; animation: fadeIn 0.4s ease; }
+            .screen.active { display: flex; }
+            @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+            /* CONNECT */
+            #screen-connect { align-items: center; justify-content: center; gap: 28px; text-align: center; }
+            .connect-icon { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; position: relative; }
+            .connect-icon::before { content:''; position:absolute; inset:-2px; border-radius:50%; border:2px solid transparent; border-top-color:var(--accent); animation:spin 2s linear infinite; }
+            @keyframes spin { to{transform:rotate(360deg)} }
+            .connect-icon svg { width: 48px; height: 48px; color: var(--accent); }
+            .connect-title { font-family: var(--font-display); font-size: 42px; letter-spacing: 4px; line-height: 1.1; }
+            .connect-sub { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 280px; }
+            .config-card { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+            .config-card label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; display: block; margin-bottom: 6px; }
+            input[type="number"], input[type="text"] { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); font-family: var(--font-mono); font-size: 16px; padding: 10px 14px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+            input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,229,255,0.1); }
+            .no-bt-banner { display: none; background: rgba(255,61,107,0.1); border: 1px solid var(--accent2); border-radius: var(--r); padding: 12px 16px; font-size: 13px; color: var(--accent2); line-height: 1.5; }
+
+            /* BUTTONS */
+            .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px 24px; border-radius: var(--r-lg); font-family: var(--font-display); font-size: 20px; letter-spacing: 3px; cursor: pointer; border: none; transition: all 0.2s ease; }
+            .btn-primary { background: var(--accent); color: #000; box-shadow: 0 0 30px rgba(0,229,255,0.25); }
+            .btn-primary:hover { box-shadow: 0 0 40px rgba(0,229,255,0.4); transform: translateY(-1px); }
+            .btn-danger { background: var(--accent2); color: #fff; box-shadow: 0 0 30px rgba(255,61,107,0.25); }
+            .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+            .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+            .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+            /* TRAINING */
+            #screen-training { gap: 16px; }
+            .timer-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--surface); border-radius: var(--r); border: 1px solid var(--border); }
+            .timer-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+            #display-time { font-family: var(--font-display); font-size: 36px; letter-spacing: 4px; }
+            .metric-hero { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 28px 24px 20px; text-align: center; }
+            .metric-hero-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+            .metric-hero-value { font-family: var(--font-display); font-size: 96px; line-height: 1; color: var(--accent); text-shadow: 0 0 40px rgba(0,229,255,0.35); letter-spacing: 2px; transition: color 0.3s; }
+            .metric-hero-unit { font-family: var(--font-mono); font-size: 14px; color: var(--muted); margin-top: 4px; }
+            .speed-bar-wrap { margin-top: 16px; height: 3px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+            .speed-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; width: 0%; transition: width 0.8s ease; }
+            .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+            .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 20px 16px; text-align: center; }
+            .metric-card-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+            .metric-card-value { font-family: var(--font-display); font-size: 42px; line-height: 1; letter-spacing: 1px; }
+            .metric-card-unit { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
+            .rpm-strip { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); }
+            .rpm-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--muted); white-space: nowrap; }
+            .rpm-dots { display: flex; gap: 4px; flex: 1; }
+            .rpm-dot { flex: 1; height: 3px; border-radius: 99px; background: var(--border); transition: background 0.3s; }
+            .rpm-dot.lit { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+            #rpm-val { font-family: var(--font-mono); font-size: 13px; min-width: 40px; text-align: right; }
+            .controls { display: flex; gap: 12px; margin-top: auto; padding-top: 8px; }
+            .controls .btn { font-size: 16px; letter-spacing: 2px; padding: 14px 20px; }
+
+            /* SUMMARY */
+            #screen-summary { gap: 20px; }
+            .summary-header { text-align: center; padding: 8px 0; }
+            .summary-title { font-family: var(--font-display); font-size: 48px; letter-spacing: 5px; color: var(--success); text-shadow: 0 0 30px rgba(0,255,157,0.3); }
+            .summary-date { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; color: var(--muted); margin-top: 4px; }
+            .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+            .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 20px 16px; text-align: center; }
+            .summary-card.wide { grid-column: 1 / -1; }
+            .summary-card-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+            .summary-card-value { font-family: var(--font-display); font-size: 52px; line-height: 1; letter-spacing: 1px; }
+            .summary-card.wide .summary-card-value { font-size: 68px; color: var(--accent); text-shadow: 0 0 30px rgba(0,229,255,0.3); }
+            .summary-card-unit { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 4px; }
+            .save-status { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); font-family: var(--font-mono); font-size: 12px; color: var(--muted); min-height: 46px; }
+            .save-status.saving { color: var(--warn); border-color: var(--warn); }
+            .save-status.saved { color: var(--success); border-color: var(--success); }
+            .save-status.error { color: var(--accent2); border-color: var(--accent2); }
+            #toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--font-mono); font-size: 13px; padding: 12px 20px; border-radius: var(--r); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index: 1000; white-space: nowrap; pointer-events: none; }
+            #toast.show { transform: translateX(-50%) translateY(0); }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <header>
+                <div class="logo">VELO<span>TRACK</span></div>
+                <div id="status-dot" class="status-dot"></div>
+            </header>
+
+            <!-- CONNECT -->
+            <section id="screen-connect" class="screen active">
+                <div class="connect-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+                    </svg>
+                </div>
+                <div class="connect-title">PRONTO<br>PARA<br>PEDALAR?</div>
+                <div class="connect-sub">Conecte seu sensor CSC via Bluetooth e comece a registrar seu treino em tempo real.</div>
+                <div id="no-bt-banner" class="no-bt-banner">
+                    Modo demo ativo — Web Bluetooth nao disponivel neste navegador. Use o Google Chrome.
+                </div>
+                <div class="config-card">
+                    <div>
+                        <label>Circunferencia do pneu (mm)</label>
+                        <input type="number" id="input-circ" value="2180" min="1500" max="2400" step="1" />
+                    </div>
+                    <div>
+                        <label>URL Google Apps Script</label>
+                        <input type="text" id="input-gas-url" placeholder="https://script.google.com/macros/s/..." />
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="btn-connect">CONECTAR SENSOR</button>
+            </section>
+
+            <!-- TRAINING -->
+            <section id="screen-training" class="screen">
+                <div class="timer-bar">
+                    <span class="timer-label">TEMPO DE TREINO</span>
+                    <span id="display-time">00:00:00</span>
+                </div>
+                <div class="metric-hero">
+                    <div class="metric-hero-label">VELOCIDADE ATUAL</div>
+                    <div class="metric-hero-value" id="display-speed">0.0</div>
+                    <div class="metric-hero-unit">km/h</div>
+                    <div class="speed-bar-wrap"><div class="speed-bar" id="speed-bar"></div></div>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-card-label">DISTANCIA</div>
+                        <div class="metric-card-value" id="display-dist">0.00</div>
+                        <div class="metric-card-unit">km</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-card-label">VEL. MEDIA</div>
+                        <div class="metric-card-value" id="display-avg">0.0</div>
+                        <div class="metric-card-unit">km/h</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-card-label">VOLTAS RODA</div>
+                        <div class="metric-card-value" id="display-rev">0</div>
+                        <div class="metric-card-unit">rev</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-card-label">VEL. MAXIMA</div>
+                        <div class="metric-card-value" id="display-max">0.0</div>
+                        <div class="metric-card-unit">km/h</div>
+                    </div>
+                </div>
+                <div class="rpm-strip">
+                    <span class="rpm-label">RPM</span>
+                    <div class="rpm-dots" id="rpm-dots"></div>
+                    <span id="rpm-val">--</span>
+                </div>
+                <div class="controls">
+                    <button class="btn btn-outline" id="btn-pause" style="flex:0 0 auto;width:auto;padding:14px 20px;">pause</button>
+                    <button class="btn btn-danger" id="btn-finish">FINALIZAR</button>
+                </div>
+            </section>
+
+            <!-- SUMMARY -->
+            <section id="screen-summary" class="screen">
+                <div class="summary-header">
+                    <div class="summary-title">TREINO<br>CONCLUIDO</div>
+                    <div class="summary-date" id="summary-date"></div>
+                </div>
+                <div class="summary-grid">
+                    <div class="summary-card wide">
+                        <div class="summary-card-label">DISTANCIA TOTAL</div>
+                        <div class="summary-card-value" id="sum-dist">0.00</div>
+                        <div class="summary-card-unit">km</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-card-label">TEMPO TOTAL</div>
+                        <div class="summary-card-value" id="sum-time">00:00</div>
+                        <div class="summary-card-unit">h : m</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-card-label">VEL. MEDIA</div>
+                        <div class="summary-card-value" id="sum-avg">0.0</div>
+                        <div class="summary-card-unit">km/h</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-card-label">VEL. MAXIMA</div>
+                        <div class="summary-card-value" id="sum-max">0.0</div>
+                        <div class="summary-card-unit">km/h</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-card-label">VOLTAS RODA</div>
+                        <div class="summary-card-value" id="sum-rev">0</div>
+                        <div class="summary-card-unit">rev</div>
+                    </div>
+                </div>
+                <div class="save-status" id="save-status"><span>Aguardando envio...</span></div>
+                <button class="btn btn-primary" id="btn-save">SALVAR NO SHEETS</button>
+                <button class="btn btn-outline" id="btn-new" style="margin-top:8px;">NOVO TREINO</button>
+            </section>
+        </div>
+
+        <div id="toast"></div>
+
+        <script>
+            const CSC_SERVICE_UUID          = 0x1816;
+            const CSC_MEASUREMENT_CHAR_UUID = 0x2A5B;
+            const MAX_SPEED_KMH             = 60;
+
+            const state = {
+                isConnected: false, isTraining: false, isPaused: false, isDemoMode: false,
+                btDevice: null, btChar: null,
+                circumferenceMm: 2180, gasUrl: '',
+                startTime: null, pausedMs: 0, pauseStart: null,
+                totalDistM: 0, currentSpeedKmh: 0, maxSpeedKmh: 0, totalRevs: 0,
+                prevRevs: null, prevEventTime: null,
+                demoInterval: null, demoRevAcc: 0, demoTimeAcc: 0,
+                result: null,
+            };
+
+            const $ = id => document.getElementById(id);
+            const screens = { connect: $('screen-connect'), training: $('screen-training'), summary: $('screen-summary') };
+            const els = {
+                statusDot: $('status-dot'), noBtBanner: $('no-bt-banner'),
+                inputCirc: $('input-circ'), inputGasUrl: $('input-gas-url'),
+                btnConnect: $('btn-connect'), displayTime: $('display-time'),
+                displaySpeed: $('display-speed'), displayDist: $('display-dist'),
+                displayAvg: $('display-avg'), displayRev: $('display-rev'),
+                displayMax: $('display-max'), speedBar: $('speed-bar'),
+                rpmDots: $('rpm-dots'), rpmVal: $('rpm-val'),
+                btnPause: $('btn-pause'), btnFinish: $('btn-finish'),
+                summaryDate: $('summary-date'), sumDist: $('sum-dist'),
+                sumTime: $('sum-time'), sumAvg: $('sum-avg'),
+                sumMax: $('sum-max'), sumRev: $('sum-rev'),
+                saveStatus: $('save-status'), btnSave: $('btn-save'),
+                btnNew: $('btn-new'), toast: $('toast'),
+            };
+
+            function showScreen(name) {
+                Object.entries(screens).forEach(([k, el]) => el.classList.toggle('active', k === name));
+            }
+
+            let toastTimer;
+            function showToast(msg, duration = 3000) {
+                els.toast.textContent = msg;
+                els.toast.classList.add('show');
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => els.toast.classList.remove('show'), duration);
+            }
+
+            if (!navigator.bluetooth) {
+                els.noBtBanner.style.display = 'block';
+                state.isDemoMode = true;
+                els.btnConnect.textContent = 'INICIAR DEMO';
+            }
+
+            for (let i = 0; i < 20; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'rpm-dot';
+                els.rpmDots.appendChild(dot);
+            }
+
+            async function connectBluetooth() {
+                try {
+                    showToast('Abrindo seletor Bluetooth...');
+                    const device = await navigator.bluetooth.requestDevice({
+                        filters: [{ services: [CSC_SERVICE_UUID] }],
+                        optionalServices: [CSC_SERVICE_UUID],
+                    });
+                    state.btDevice = device;
+                    device.addEventListener('gattserverdisconnected', onDisconnected);
+                    showToast('Conectando a ' + device.name + '...');
+                    const server  = await device.gatt.connect();
+                    const service = await server.getPrimaryService(CSC_SERVICE_UUID);
+                    const char    = await service.getCharacteristic(CSC_MEASUREMENT_CHAR_UUID);
+                    state.btChar  = char;
+                    char.addEventListener('characteristicvaluechanged', onCSCData);
+                    await char.startNotifications();
+                    onConnected(device.name || 'Sensor CSC');
+                } catch (err) {
+                    if (err.name !== 'NotFoundError') showToast('Erro: ' + err.message);
+                }
+            }
+
+            function onConnected(name) {
+                state.isConnected = true;
+                els.statusDot.className = 'status-dot connected';
+                showToast('Conectado: ' + name);
+                startTraining();
+            }
+
+            function onDisconnected() {
+                state.isConnected = false;
+                if (state.isTraining) { els.statusDot.className = 'status-dot'; pauseTraining(); }
+            }
+
+            function onCSCData(event) {
+                const data  = event.target.value;
+                const flags = data.getUint8(0);
+                if ((flags & 0x01) === 0) return;
+                let offset = 1;
+                const cumWheelRevs   = data.getUint32(offset, true); offset += 4;
+                const lastWheelEvent = data.getUint16(offset, true);
+                processRevData(cumWheelRevs, lastWheelEvent);
+            }
+
+            function processRevData(cumRevs, eventTime) {
+                if (state.prevRevs === null) { state.prevRevs = cumRevs; state.prevEventTime = eventTime; return; }
+                let deltaRevs = cumRevs - state.prevRevs;
+                if (deltaRevs < 0) deltaRevs += 0xFFFFFFFF;
+                let deltaTime = eventTime - state.prevEventTime;
+                if (deltaTime < 0) deltaTime += 0xFFFF;
+                const deltaTimeSec = deltaTime / 1024;
+                state.prevRevs = cumRevs; state.prevEventTime = eventTime;
+                if (deltaTimeSec <= 0 || !state.isTraining || state.isPaused) return;
+                const distM    = (deltaRevs * state.circumferenceMm) / 1000;
+                const speedKmh = (distM / deltaTimeSec) * 3.6;
+                state.totalDistM     += distM;
+                state.totalRevs       = cumRevs;
+                state.currentSpeedKmh = speedKmh;
+                if (speedKmh > state.maxSpeedKmh) state.maxSpeedKmh = speedKmh;
+                const rpm = (deltaRevs / deltaTimeSec) * 60;
+                updateRpmDots(rpm);
+                els.rpmVal.textContent = Math.round(rpm) + ' rpm';
+                updateTrainingDisplay();
+            }
+
+            let timerInterval;
+            function startTimer() {
+                clearInterval(timerInterval);
+                timerInterval = setInterval(() => { if (!state.isPaused) updateTrainingDisplay(); }, 1000);
+            }
+
+            function getElapsedMs() {
+                if (!state.startTime) return 0;
+                const now    = Date.now();
+                const paused = state.isPaused ? (now - state.pauseStart) : 0;
+                return now - state.startTime - state.pausedMs - paused;
+            }
+
+            function formatTime(ms) {
+                const s = Math.floor(ms / 1000);
+                const h = Math.floor(s / 3600);
+                const m = Math.floor((s % 3600) / 60);
+                const sec = s % 60;
+                return [h, m, sec].map(n => String(n).padStart(2, '0')).join(':');
+            }
+
+            function updateTrainingDisplay() {
+                const elapsedMs  = getElapsedMs();
+                const elapsedSec = elapsedMs / 1000;
+                const distKm     = state.totalDistM / 1000;
+                const avgKmh     = elapsedSec > 0 ? (distKm / (elapsedSec / 3600)) : 0;
+                els.displayTime.textContent  = formatTime(elapsedMs);
+                els.displaySpeed.textContent = state.currentSpeedKmh.toFixed(1);
+                els.displayDist.textContent  = distKm.toFixed(2);
+                els.displayAvg.textContent   = avgKmh.toFixed(1);
+                els.displayMax.textContent   = state.maxSpeedKmh.toFixed(1);
+                els.displayRev.textContent   = state.totalRevs.toLocaleString('pt-BR');
+                const pct = Math.min((state.currentSpeedKmh / MAX_SPEED_KMH) * 100, 100);
+                els.speedBar.style.width = pct + '%';
+            }
+
+            function updateRpmDots(rpm) {
+                const litCount = Math.round(Math.min(rpm / 120, 1) * 20);
+                els.rpmDots.querySelectorAll('.rpm-dot').forEach((dot, i) => dot.classList.toggle('lit', i < litCount));
+            }
+
+            function startTraining() {
+                state.isTraining = true; state.isPaused = false;
+                state.startTime  = Date.now(); state.pausedMs = 0;
+                state.totalDistM = 0; state.currentSpeedKmh = 0;
+                state.maxSpeedKmh = 0; state.totalRevs = 0;
+                state.prevRevs = null; state.prevEventTime = null;
+                els.statusDot.className = 'status-dot training';
+                showScreen('training');
+                startTimer();
+                if (state.isDemoMode) startDemo();
+            }
+
+            function pauseTraining() {
+                if (state.isPaused) {
+                    state.pausedMs  += Date.now() - state.pauseStart;
+                    state.isPaused   = false; state.pauseStart = null;
+                    els.btnPause.textContent    = 'pause';
+                    els.statusDot.className     = 'status-dot training';
+                    if (state.isDemoMode) startDemo();
+                } else {
+                    state.isPaused   = true; state.pauseStart = Date.now();
+                    state.currentSpeedKmh       = 0;
+                    els.btnPause.textContent    = 'play';
+                    els.statusDot.className     = 'status-dot connected';
+                    if (state.isDemoMode) stopDemo();
+                }
+            }
+
+            function finishTraining() {
+                state.isTraining = false;
+                clearInterval(timerInterval);
+                stopDemo();
+                const elapsedMs  = getElapsedMs();
+                const elapsedSec = elapsedMs / 1000;
+                const distKm     = state.totalDistM / 1000;
+                const avgKmh     = elapsedSec > 0 ? (distKm / (elapsedSec / 3600)) : 0;
+                state.result = {
+                    date: new Date().toLocaleString('pt-BR'),
+                    duration: formatTime(elapsedMs),
+                    distKm: parseFloat(distKm.toFixed(3)),
+                    avgKmh: parseFloat(avgKmh.toFixed(1)),
+                    maxKmh: parseFloat(state.maxSpeedKmh.toFixed(1)),
+                    revs:   state.totalRevs,
+                };
+                const m   = Math.floor(elapsedMs / 60000);
+                const h   = Math.floor(m / 60);
+                const min = m % 60;
+                els.summaryDate.textContent = state.result.date;
+                els.sumDist.textContent = state.result.distKm.toFixed(2);
+                els.sumTime.textContent = String(h).padStart(2,'0') + ':' + String(min).padStart(2,'0');
+                els.sumAvg.textContent  = state.result.avgKmh.toFixed(1);
+                els.sumMax.textContent  = state.result.maxKmh.toFixed(1);
+                els.sumRev.textContent  = state.result.revs.toLocaleString('pt-BR');
+                els.saveStatus.className = 'save-status';
+                els.saveStatus.innerHTML = 'Aguardando envio...';
+                els.btnSave.disabled = false;
+                els.statusDot.className = 'status-dot connected';
+                showScreen('summary');
+            }
+
+            async function saveToSheets() {
+                const url = state.gasUrl.trim();
+                if (!url) { showToast('Configure a URL do Apps Script primeiro!'); return; }
+                if (!state.result) return;
+                els.btnSave.disabled = true;
+                els.saveStatus.className = 'save-status saving';
+                els.saveStatus.innerHTML = 'Enviando dados...';
+                try {
+                    const params = new URLSearchParams();
+                    params.append('payload', JSON.stringify(state.result));
+                    await fetch(url, { method: 'POST', mode: 'no-cors', body: params });
+                    els.saveStatus.className = 'save-status saved';
+                    els.saveStatus.innerHTML = 'Salvo no Google Sheets!';
+                    showToast('Treino salvo com sucesso!');
+                } catch (err) {
+                    els.saveStatus.className = 'save-status error';
+                    els.saveStatus.innerHTML = 'Erro: ' + err.message;
+                    showToast('Falha ao salvar: ' + err.message);
+                    els.btnSave.disabled = false;
+                }
+            }
+
+            function startDemo() {
+                stopDemo();
+                state.demoRevAcc  = state.prevRevs || 0;
+                state.demoTimeAcc = state.prevEventTime || 0;
+                state.demoInterval = setInterval(() => {
+                    if (!state.isTraining || state.isPaused) return;
+                    const targetSpeed = 18 + Math.random() * 17;
+                    const revPerSec   = (targetSpeed / 3.6) / (state.circumferenceMm / 1000);
+                    state.demoRevAcc  += revPerSec * 0.5;
+                    state.demoTimeAcc += 512;
+                    if (state.demoTimeAcc > 0xFFFF) state.demoTimeAcc -= 0xFFFF;
+                    processRevData(Math.round(state.demoRevAcc), Math.round(state.demoTimeAcc) % 0xFFFF);
+                }, 500);
+            }
+
+            function stopDemo() {
+                if (state.demoInterval) { clearInterval(state.demoInterval); state.demoInterval = null; }
+            }
+
+            els.btnConnect.addEventListener('click', () => {
+                state.circumferenceMm = parseInt(els.inputCirc.value) || 2180;
+                state.gasUrl          = els.inputGasUrl.value.trim();
+                if (state.isDemoMode) {
+                    state.isConnected = true;
+                    els.statusDot.className = 'status-dot connected';
+                    showToast('Modo demo ativo');
+                    startTraining();
+                } else {
+                    connectBluetooth();
+                }
+            });
+
+            els.btnPause.addEventListener('click', pauseTraining);
+            els.btnFinish.addEventListener('click', finishTraining);
+            els.btnSave.addEventListener('click', saveToSheets);
+            els.btnNew.addEventListener('click', () => {
+                state.result = null; state.isConnected = false; state.isPaused = false;
+                stopDemo();
+                if (state.btChar) { state.btChar.stopNotifications().catch(()=>{}); state.btChar = null; }
+                if (state.btDevice && state.btDevice.gatt.connected) { state.btDevice.gatt.disconnect(); state.btDevice = null; }
+                els.statusDot.className = 'status-dot';
+                showScreen('connect');
+            });
+
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
+            }
+        </script>
+    </body>
+</html>
