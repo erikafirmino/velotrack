@@ -334,6 +334,9 @@
                 const deltaTimeSec = deltaTime / 1024;
                 state.prevRevs = cumRevs; state.prevEventTime = eventTime;
                 if (deltaTimeSec <= 0 || !state.isTraining || state.isPaused) return;
+                // Descarta leituras fisicamente impossiveis (acima de 80 km/h)
+                const speedCheck = ((deltaRevs * state.circumferenceMm) / 1000 / deltaTimeSec) * 3.6;
+                if (speedCheck > 80) { state.prevRevs = cumRevs; state.prevEventTime = eventTime; return; }
                 const distM    = (deltaRevs * state.circumferenceMm) / 1000;
                 const speedKmh = (distM / deltaTimeSec) * 3.6;
                 state.totalDistM     += distM;
