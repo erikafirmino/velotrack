@@ -18,8 +18,6 @@
                 --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
                 --border: #2a2a3a; --accent: #00e5ff; --accent2: #ff3d6b;
                 --text: #e8e8f0; --muted: #6b6b80; --success: #00ff9d; --warn: #ffaa00;
-                --sky1: #1a3a5c; --sky2: #2d6a8f; --sky3: #4a9aba;
-                --grass1: #1a3d1a; --grass2: #2d5e2d; --road: #8b7355;
                 --font-display: 'Bebas Neue', sans-serif;
                 --font-mono: 'DM Mono', monospace;
                 --font-body: 'Inter', sans-serif;
@@ -32,15 +30,13 @@
             .logo span { color: var(--text); opacity: 0.5; }
             .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); transition: all 0.4s ease; }
             .status-dot.connected { background: var(--success); box-shadow: 0 0 12px var(--success); animation: pdot 2s ease-in-out infinite; }
-            .status-dot.training { background: var(--accent2); box-shadow: 0 0 12px var(--accent2); animation: pdot 1s ease-in-out infinite; }
+            .status-dot.training  { background: var(--accent2); box-shadow: 0 0 12px var(--accent2); animation: pdot 1s ease-in-out infinite; }
             @keyframes pdot { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
             .screen { display: none; flex: 1; flex-direction: column; animation: fadeIn 0.4s ease; }
             .screen.active { display: flex; }
             @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
-            /* ═══════════════════════════════
-               CONNECT SCREEN
-            ═══════════════════════════════ */
+            /* CONNECT */
             #screen-connect { align-items: center; justify-content: center; gap: 24px; text-align: center; padding: 24px; }
             .connect-icon { width: 110px; height: 110px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; position: relative; }
             .connect-icon::before { content:''; position:absolute; inset:-2px; border-radius:50%; border:2px solid transparent; border-top-color:var(--accent); animation:spin 2s linear infinite; }
@@ -61,12 +57,8 @@
             .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
             .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-            /* ═══════════════════════════════
-               TRAINING SCREEN — SIMULATOR
-            ═══════════════════════════════ */
-            #screen-training { gap: 0; position: relative; overflow: hidden; }
-
-            /* ── Cena 3D ── */
+            /* TRAINING */
+            #screen-training { gap: 0; }
             .scene {
                 width: 100%;
                 height: 210px;
@@ -78,244 +70,6 @@
             }
             .scene > *:not(#scene-svg) { display: none !important; }
 
-            /* Céu */
-            .sky {
-                position: absolute;
-                inset: 0;
-                background: linear-gradient(180deg, #0d1f35 0%, #1a4a6e 50%, #2d7a9a 100%);
-            }
-
-            /* Sol */
-            .sun {
-                position: absolute;
-                top: 18px;
-                right: 40px;
-                width: 36px;
-                height: 36px;
-                border-radius: 50%;
-                background: radial-gradient(circle, #ffe066 0%, #ffaa00 60%, transparent 100%);
-                box-shadow: 0 0 30px rgba(255,200,0,0.5);
-            }
-
-            /* Nuvens */
-            .cloud {
-                position: absolute;
-                background: rgba(255,255,255,0.15);
-                border-radius: 50px;
-                animation: cloudMove linear infinite;
-            }
-            .cloud::before, .cloud::after {
-                content: '';
-                position: absolute;
-                background: rgba(255,255,255,0.15);
-                border-radius: 50%;
-            }
-            .cloud-1 { width: 80px; height: 18px; top: 22px; animation-duration: 18s; }
-            .cloud-1::before { width: 30px; height: 25px; top: -12px; left: 12px; }
-            .cloud-1::after  { width: 22px; height: 20px; top: -8px; left: 38px; }
-            .cloud-2 { width: 60px; height: 14px; top: 38px; animation-duration: 24s; animation-delay: -8s; opacity: 0.7; }
-            .cloud-2::before { width: 22px; height: 18px; top: -9px; left: 10px; }
-            .cloud-2::after  { width: 16px; height: 14px; top: -6px; left: 28px; }
-            .cloud-3 { width: 50px; height: 12px; top: 15px; animation-duration: 30s; animation-delay: -15s; opacity: 0.5; }
-            @keyframes cloudMove { from { left: 110%; } to { left: -20%; } }
-
-            /* Montanhas ao fundo */
-            .mountains {
-                position: absolute;
-                bottom: 72px;
-                left: 0; right: 0;
-                height: 60px;
-            }
-            .mountains svg { width: 100%; height: 100%; }
-
-            /* Faixa de grama (fundo) */
-            .grass-back {
-                position: absolute;
-                bottom: 65px;
-                left: 0; right: 0;
-                height: 20px;
-                background: linear-gradient(180deg, #1a4a1a 0%, #2d6e2d 100%);
-            }
-
-            /* Árvores */
-            .trees {
-                position: absolute;
-                bottom: 65px;
-                left: 0;
-                width: 200%;
-                height: 55px;
-                display: flex;
-                align-items: flex-end;
-                gap: 0;
-            }
-            .trees.layer1 { animation: treesMove linear infinite; }
-            .trees.layer2 { animation: treesMove2 linear infinite; bottom: 70px; opacity: 0.6; transform: scaleX(0.7); }
-
-            @keyframes treesMove  { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-            @keyframes treesMove2 { from { transform: translateX(-10%); } to { transform: translateX(-60%); } }
-
-            .tree {
-                flex-shrink: 0;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-            .tree-top {
-                width: 0; height: 0;
-                border-left: solid transparent;
-                border-right: solid transparent;
-                border-bottom: solid #1a5e1a;
-            }
-            .tree-top2 {
-                width: 0; height: 0;
-                border-left: solid transparent;
-                border-right: solid transparent;
-                border-bottom: solid #236e23;
-                margin-top: -4px;
-            }
-            .tree-trunk {
-                background: #5a3a1a;
-                border-radius: 1px;
-            }
-
-            /* Estrada */
-            .road-wrap {
-                position: absolute;
-                bottom: 0;
-                left: 0; right: 0;
-                height: 70px;
-                overflow: hidden;
-            }
-            .road-bg {
-                position: absolute;
-                inset: 0;
-                background: linear-gradient(180deg, #6b5a3a 0%, #8b7355 40%, #a08b6a 100%);
-            }
-
-            /* Perspectiva da estrada */
-            .road-perspective {
-                position: absolute;
-                bottom: 0;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 100%;
-                height: 100%;
-            }
-
-            /* Faixas laterais da estrada */
-            .road-edge-left, .road-edge-right {
-                position: absolute;
-                bottom: 0;
-                width: 3px;
-                height: 100%;
-                background: rgba(255,255,255,0.3);
-            }
-            .road-edge-left  { left: 20%; }
-            .road-edge-right { right: 20%; }
-
-            /* Tracejado central animado */
-            .road-lines {
-                position: absolute;
-                bottom: 0;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 4px;
-                height: 200%;
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-            }
-            .road-line {
-                width: 4px;
-                height: 20px;
-                background: rgba(255,255,255,0.6);
-                border-radius: 2px;
-                flex-shrink: 0;
-            }
-
-            /* Grama frente */
-            .grass-front {
-                position: absolute;
-                bottom: 65px;
-                left: 0; right: 0;
-                height: 10px;
-                background: linear-gradient(180deg, #2d7a2d 0%, #3a8a3a 100%);
-                z-index: 2;
-            }
-
-            /* Bicicleta */
-            .bike-wrap {
-                position: absolute;
-                bottom: 28px;
-                left: 50%;
-                transform: translateX(-50%);
-                z-index: 5;
-            }
-            .bike-svg {
-                width: 80px;
-                height: 52px;
-                filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
-            }
-
-            /* Partículas de poeira */
-            .dust-container {
-                position: absolute;
-                bottom: 30px;
-                left: calc(50% - 50px);
-                z-index: 4;
-                pointer-events: none;
-            }
-            .dust {
-                position: absolute;
-                width: 4px;
-                height: 4px;
-                border-radius: 50%;
-                background: rgba(160,139,106,0.6);
-                animation: dustFly 0.8s ease-out forwards;
-            }
-            @keyframes dustFly {
-                0%   { transform: translate(0,0) scale(1); opacity: 0.7; }
-                100% { transform: translate(-25px,-12px) scale(0); opacity: 0; }
-            }
-
-            /* HUD de velocidade */
-            .hud-speed {
-                position: absolute;
-                top: 10px;
-                left: 14px;
-                z-index: 10;
-                background: rgba(0,0,0,0.5);
-                border: 1px solid rgba(0,229,255,0.3);
-                border-radius: var(--r);
-                padding: 6px 12px;
-                backdrop-filter: blur(4px);
-            }
-            .hud-speed-val {
-                font-family: var(--font-display);
-                font-size: 32px;
-                color: var(--accent);
-                line-height: 1;
-                text-shadow: 0 0 15px rgba(0,229,255,0.5);
-            }
-            .hud-speed-unit { font-family: var(--font-mono); font-size: 9px; color: var(--muted); letter-spacing: 1px; }
-
-            /* HUD tempo */
-            .hud-time {
-                position: absolute;
-                top: 10px;
-                right: 14px;
-                z-index: 10;
-                background: rgba(0,0,0,0.5);
-                border: 1px solid rgba(255,255,255,0.1);
-                border-radius: var(--r);
-                padding: 6px 12px;
-                backdrop-filter: blur(4px);
-                text-align: right;
-            }
-            .hud-time-val { font-family: var(--font-display); font-size: 22px; letter-spacing: 2px; line-height: 1; }
-            .hud-time-label { font-family: var(--font-mono); font-size: 9px; color: var(--muted); letter-spacing: 1px; }
-
-            /* ── Painel inferior ── */
             .dashboard {
                 flex: 1;
                 background: var(--bg);
@@ -324,48 +78,20 @@
                 flex-direction: column;
                 gap: 10px;
             }
-
-            /* Gráfico de velocidade */
-            .speed-chart-wrap {
-                background: var(--surface);
-                border: 1px solid var(--border);
-                border-radius: var(--r-lg);
-                padding: 8px 12px 6px;
-            }
-            .speed-chart-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 4px;
-            }
+            .speed-chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 8px 12px 6px; }
+            .speed-chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
             .speed-chart-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
             #speed-chart-current { font-family: var(--font-mono); font-size: 11px; color: var(--accent); }
             #speed-canvas { width: 100%; height: 36px; display: block; }
-
-            /* Métricas */
-            .metrics-row {
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: 8px;
-            }
-            .metric-card {
-                background: var(--surface);
-                border: 1px solid var(--border);
-                border-radius: var(--r-lg);
-                padding: 12px 8px;
-                text-align: center;
-            }
+            .metrics-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+            .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 12px 8px; text-align: center; }
             .metric-card-label { font-family: var(--font-mono); font-size: 8px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
             .metric-card-value { font-family: var(--font-display); font-size: 32px; line-height: 1; letter-spacing: 1px; }
             .metric-card-unit  { font-family: var(--font-mono); font-size: 9px; color: var(--muted); margin-top: 2px; }
-
-            /* Controles */
             .controls { display: flex; gap: 10px; flex-shrink: 0; }
             .controls .btn { font-size: 18px; letter-spacing: 2px; padding: 16px; }
 
-            /* ═══════════════════════════════
-               SUMMARY SCREEN
-            ═══════════════════════════════ */
+            /* SUMMARY */
             #screen-summary { gap: 16px; padding: 20px; }
             .summary-header { text-align: center; padding: 4px 0; }
             .summary-title { font-family: var(--font-display); font-size: 44px; letter-spacing: 5px; color: var(--success); text-shadow: 0 0 30px rgba(0,255,157,0.3); }
@@ -381,8 +107,15 @@
             .save-status.saving { color: var(--warn);    border-color: var(--warn); }
             .save-status.saved  { color: var(--success); border-color: var(--success); }
             .save-status.error  { color: var(--accent2); border-color: var(--accent2); }
+            /* Confete */
+            .confete-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 500; overflow: hidden; display: none; }
+            .confete-wrap.ativo { display: block; }
+            .confete { position: absolute; top: -10px; width: 8px; height: 14px; border-radius: 2px; animation: confeteFall linear forwards; }
+            @keyframes confeteFall {
+                0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+                100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+            }
 
-            /* Toast */
             #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--font-mono); font-size: 12px; padding: 10px 18px; border-radius: var(--r); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index: 1000; white-space: nowrap; pointer-events: none; }
             #toast.show { transform: translateX(-50%) translateY(0); }
         </style>
@@ -394,7 +127,7 @@
                 <div id="status-dot" class="status-dot"></div>
             </header>
 
-            <!-- ══ CONNECT ══ -->
+            <!-- CONNECT -->
             <section id="screen-connect" class="screen active">
                 <div class="connect-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -411,6 +144,14 @@
                         <input type="number" id="input-circ" value="2180" min="1500" max="2400" step="1" />
                     </div>
                     <div>
+                        <label>Seu peso (kg) — para calcular calorias</label>
+                        <input type="number" id="input-weight" value="70" min="30" max="200" step="1" />
+                    </div>
+                    <div>
+                        <label>Meta de distância por treino (km)</label>
+                        <input type="number" id="input-meta" value="10" min="1" max="200" step="0.5" />
+                    </div>
+                    <div>
                         <label>URL Google Apps Script</label>
                         <input type="text" id="input-gas-url" placeholder="https://script.google.com/macros/s/..." />
                     </div>
@@ -418,13 +159,10 @@
                 <button class="btn btn-primary" id="btn-connect">CONECTAR SENSOR</button>
             </section>
 
-            <!-- ══ TRAINING ══ -->
+            <!-- TRAINING -->
             <section id="screen-training" class="screen">
-
-                <!-- Cena simulador -->
                 <div class="scene">
-
-                    <svg id="scene-svg" width="100%" height="240" viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" style="display:block;width:100%;height:240px;max-height:240px;">
+                    <svg id="scene-svg" width="100%" height="210" viewBox="0 0 400 210" preserveAspectRatio="xMidYMid slice" style="display:block;width:100%;height:210px;max-height:210px;">
                         <defs>
                             <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="0%"   stop-color="#1a0a2e"/>
@@ -438,19 +176,18 @@
                                 <stop offset="40%"  stop-color="#ffcc00"/>
                                 <stop offset="100%" stop-color="#ff8800" stop-opacity="0.3"/>
                             </radialGradient>
-                            <clipPath id="sceneclip"><rect width="400" height="240"/></clipPath>
+                            <clipPath id="sceneclip"><rect width="400" height="210"/></clipPath>
                         </defs>
 
-                        <!-- Ceu -->
-                        <rect width="400" height="240" fill="url(#sky)"/>
+                        <rect width="400" height="210" fill="url(#sky)"/>
 
                         <!-- Sol -->
-                        <circle cx="200" cy="145" r="55" fill="url(#sunRad)" opacity="0.3"/>
-                        <circle cx="200" cy="145" r="30" fill="#ffcc44" opacity="0.5"/>
-                        <circle cx="200" cy="145" r="16" fill="#fff4a0" opacity="0.95"/>
-                        <polygon points="197,145 203,145 228,240 172,240" fill="rgba(255,180,50,0.12)"/>
+                        <circle cx="200" cy="128" r="55" fill="url(#sunRad)" opacity="0.3"/>
+                        <circle cx="200" cy="128" r="30" fill="#ffcc44" opacity="0.5"/>
+                        <circle cx="200" cy="128" r="16" fill="#fff4a0" opacity="0.95"/>
+                        <polygon points="197,128 203,128 228,210 172,210" fill="rgba(255,180,50,0.12)"/>
 
-                        <!-- Nuvens (animadas via JS) -->
+                        <!-- Nuvens -->
                         <g id="cloud1" opacity="0.55">
                             <ellipse cx="80"  cy="26" rx="42" ry="13"  fill="#c05020" opacity="0.4"/>
                             <ellipse cx="80"  cy="24" rx="42" ry="13"  fill="#ffb87a"/>
@@ -468,30 +205,30 @@
                             <ellipse cx="320" cy="15" rx="12" ry="9"   fill="#ffcc99"/>
                         </g>
 
-                        <!-- Passaros (animados via JS) -->
+                        <!-- Passaros -->
                         <g id="birds"></g>
 
                         <!-- Montanhas -->
-                        <polygon points="0,145 55,73 125,113 200,63 270,97 340,77 400,93 400,145 0,145" fill="#1a0820" opacity="0.92"/>
-                        <polygon points="0,145 44,97 112,127 185,87 255,117 325,101 400,113 400,145 0,145" fill="#2a1030" opacity="0.75"/>
-                        <polyline points="0,145 44,97 112,127 185,87 255,117 325,101 400,113" stroke="rgba(255,140,40,0.3)" stroke-width="1.5" fill="none"/>
+                        <polygon points="0,128 55,56 125,96 200,46 270,80 340,60 400,76 400,128 0,128" fill="#1a0820" opacity="0.92"/>
+                        <polygon points="0,128 44,80 112,110 185,70 255,100 325,84 400,96 400,128 0,128" fill="#2a1030" opacity="0.75"/>
+                        <polyline points="0,128 44,80 112,110 185,70 255,100 325,84 400,96" stroke="rgba(255,140,40,0.3)" stroke-width="1.5" fill="none"/>
 
                         <!-- Grama horizonte -->
-                        <rect x="0" y="143" width="400" height="8" fill="#1a3010"/>
+                        <rect x="0" y="126" width="400" height="8" fill="#1a3010"/>
 
-                        <!-- Estrada (geometria fixa, animacao nas faixas) -->
-                        <polygon id="road-poly" points="198,145 202,145 400,240 0,240" fill="#6b5535"/>
-                        <line x1="198" y1="145" x2="0"   y2="240" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
-                        <line x1="202" y1="145" x2="400" y2="240" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                        <!-- Estrada -->
+                        <polygon id="road-poly" points="198,128 202,128 400,210 0,210" fill="#6b5535"/>
+                        <line x1="198" y1="128" x2="0"   y2="210" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                        <line x1="202" y1="128" x2="400" y2="210" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
 
-                        <!-- Faixas tracejadas (animadas via JS) -->
+                        <!-- Faixas -->
                         <g id="road-dashes"></g>
 
                         <!-- Grama lateral -->
-                        <polygon points="0,151 198,151 0,240"   fill="#2a5a18"/>
-                        <polygon points="202,151 400,151 400,240" fill="#2a5a18"/>
+                        <polygon points="0,134 198,134 0,210"    fill="#2a5a18"/>
+                        <polygon points="202,134 400,134 400,210" fill="#2a5a18"/>
 
-                        <!-- Arvores (animadas via JS) -->
+                        <!-- Arvores -->
                         <g id="trees-group" clip-path="url(#sceneclip)"></g>
 
                         <!-- HUD velocidade -->
@@ -504,16 +241,13 @@
                         <text id="hud-time" x="284" y="32" fill="#e8e8f0" font-size="16" font-family="'Bebas Neue',monospace" letter-spacing="2">00:00:00</text>
                         <text x="284" y="46" fill="#6b6b80" font-size="7" font-family="monospace" letter-spacing="2">TEMPO</text>
                     </svg>
-
                 </div>
 
                 <!-- Elementos hidden para compatibilidade JS -->
                 <span id="display-time"  style="display:none">00:00:00</span>
                 <span id="display-speed" style="display:none">0.0</span>
 
-                <!-- Dashboard -->
                 <div class="dashboard">
-                    <!-- Grafico de velocidade -->
                     <div class="speed-chart-wrap">
                         <div class="speed-chart-header">
                             <span class="speed-chart-label">VELOCIDADE</span>
@@ -521,8 +255,6 @@
                         </div>
                         <canvas id="speed-canvas"></canvas>
                     </div>
-
-                    <!-- Metricas -->
                     <div class="metrics-row">
                         <div class="metric-card">
                             <div class="metric-card-label">DIST</div>
@@ -540,8 +272,20 @@
                             <div class="metric-card-unit">km/h</div>
                         </div>
                     </div>
-
-                    <!-- Controles -->
+                    <div class="metrics-row">
+                        <div class="metric-card">
+                            <div class="metric-card-label">CALORIAS</div>
+                            <div class="metric-card-value" id="display-cal" style="color:var(--warn)">0</div>
+                            <div class="metric-card-unit">kcal</div>
+                        </div>
+                        <div class="metric-card" id="meta-card" style="grid-column:2/-1;text-align:left;padding:10px 12px;">
+                            <div class="metric-card-label" style="margin-bottom:6px;">META <span id="meta-label" style="color:var(--accent)">-- km</span></div>
+                            <div style="height:8px;background:var(--surface2);border-radius:99px;overflow:hidden;">
+                                <div id="meta-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--success));border-radius:99px;transition:width 0.5s ease;"></div>
+                            </div>
+                            <div id="meta-remaining" style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:4px;">Configure uma meta</div>
+                        </div>
+                    </div>
                     <div class="controls">
                         <button class="btn btn-outline" id="btn-pause" style="flex:0 0 auto;width:auto;padding:13px 18px;">II</button>
                         <button class="btn btn-danger" id="btn-finish">FINALIZAR</button>
@@ -549,7 +293,7 @@
                 </div>
             </section>
 
-            <!-- ══ SUMMARY ══ -->
+            <!-- SUMMARY -->
             <section id="screen-summary" class="screen">
                 <div class="summary-header">
                     <div class="summary-title">TREINO<br>CONCLUIDO</div>
@@ -581,6 +325,11 @@
                         <div class="summary-card-value" id="sum-rev">0</div>
                         <div class="summary-card-unit">rev</div>
                     </div>
+                    <div class="summary-card">
+                        <div class="summary-card-label">CALORIAS</div>
+                        <div class="summary-card-value" id="sum-cal" style="color:var(--warn)">0</div>
+                        <div class="summary-card-unit">kcal</div>
+                    </div>
                 </div>
                 <div class="save-status" id="save-status"><span>Aguardando envio...</span></div>
                 <button class="btn btn-primary" id="btn-save">SALVAR NO SHEETS</button>
@@ -589,19 +338,14 @@
         </div>
 
         <div id="toast"></div>
+        <div class="confete-wrap" id="confete-wrap"></div>
 
         <script>
-            /* ══════════════════════════════════════════════════════
-               CONSTANTES
-            ══════════════════════════════════════════════════════ */
             const CSC_SERVICE_UUID          = 0x1816;
             const CSC_MEASUREMENT_CHAR_UUID = 0x2A5B;
             const MAX_SPEED_KMH             = 60;
             const CHART_POINTS              = 40;
 
-            /* ══════════════════════════════════════════════════════
-               ESTADO
-            ══════════════════════════════════════════════════════ */
             const state = {
                 isConnected: false, isTraining: false, isPaused: false, isDemoMode: false,
                 btDevice: null, btChar: null,
@@ -610,36 +354,25 @@
                 totalDistM: 0, currentSpeedKmh: 0, maxSpeedKmh: 0, totalRevs: 0,
                 prevRevs: null, prevEventTime: null,
                 demoInterval: null, demoRevAcc: 0, demoTimeAcc: 0,
-                result: null,
-                wakeLock: null,
+                result: null, wakeLock: null,
+                weightKg: 70, metaKm: 10,
                 speedHistory: [],
             };
 
-            /* ══════════════════════════════════════════════════════
-               DOM
-            ══════════════════════════════════════════════════════ */
             const $ = id => document.getElementById(id);
             const screens = { connect: $('screen-connect'), training: $('screen-training'), summary: $('screen-summary') };
             const els = {
                 statusDot: $('status-dot'), noBtBanner: $('no-bt-banner'),
                 inputCirc: $('input-circ'), inputGasUrl: $('input-gas-url'),
-                btnConnect: $('btn-connect'), displayTime: $('display-time'),
-                displaySpeed: $('display-speed'), displayDist: $('display-dist'),
-                displayAvg: $('display-avg'), displayMax: $('display-max'),
+                btnConnect: $('btn-connect'),
+                displayDist: $('display-dist'), displayAvg: $('display-avg'), displayMax: $('display-max'),
                 btnPause: $('btn-pause'), btnFinish: $('btn-finish'),
                 summaryDate: $('summary-date'), sumDist: $('sum-dist'),
-                sumTime: $('sum-time'), sumAvg: $('sum-avg'),
-                sumMax: $('sum-max'), sumRev: $('sum-rev'),
-                saveStatus: $('save-status'), btnSave: $('btn-save'),
-                btnNew: $('btn-new'), toast: $('toast'),
-                speedChartCurrent: $('speed-chart-current'),
-                speedCanvas: $('speed-canvas'),
-                dustContainer: $('dust-container'),
+                sumTime: $('sum-time'), sumAvg: $('sum-avg'), sumMax: $('sum-max'), sumRev: $('sum-rev'),
+                saveStatus: $('save-status'), btnSave: $('btn-save'), btnNew: $('btn-new'),
+                toast: $('toast'), speedChartCurrent: $('speed-chart-current'), speedCanvas: $('speed-canvas'),
             };
 
-            /* ══════════════════════════════════════════════════════
-               NAVEGACAO
-            ══════════════════════════════════════════════════════ */
             function showScreen(name) {
                 Object.entries(screens).forEach(([k, el]) => el.classList.toggle('active', k === name));
             }
@@ -652,271 +385,25 @@
                 toastTimer = setTimeout(() => els.toast.classList.remove('show'), dur);
             }
 
-            /* ══════════════════════════════════════════════════════
-               ARVORES — gerador procedural
-            ══════════════════════════════════════════════════════ */
-            function makeTree(h, w) {
-                const t = document.createElement('div');
-                t.className = 'tree';
-                t.style.marginRight = Math.floor(Math.random() * 20 + 10) + 'px';
-
-                const t1 = document.createElement('div');
-                t1.className = 'tree-top';
-                t1.style.cssText = `border-left-width:${w*0.5}px;border-right-width:${w*0.5}px;border-bottom-width:${h*0.5}px;`;
-
-                const t2 = document.createElement('div');
-                t2.className = 'tree-top2';
-                t2.style.cssText = `border-left-width:${w*0.65}px;border-right-width:${w*0.65}px;border-bottom-width:${h*0.6}px;`;
-
-                const trunk = document.createElement('div');
-                trunk.className = 'tree-trunk';
-                trunk.style.cssText = `width:${Math.max(4,w*0.18)}px;height:${h*0.25}px;`;
-
-                t.appendChild(t1); t.appendChild(t2); t.appendChild(trunk);
-                return t;
-            }
-
-            function buildTrees(containerId, count, hMin, hMax) {
-                const c = $(containerId);
-                for (let i = 0; i < count; i++) {
-                    const h = hMin + Math.random() * (hMax - hMin);
-                    const w = h * 0.5;
-                    c.appendChild(makeTree(h, w));
-                }
-                // Duplica para loop infinito
-                const children = [...c.children];
-                children.forEach(ch => c.appendChild(ch.cloneNode(true)));
-            }
-
-
-
-            /* ══════════════════════════════════════════════════════
-               LINHAS DA ESTRADA
-            ══════════════════════════════════════════════════════ */
-
-
-            /* ══════════════════════════════════════════════════════
-               ANIMACAO DA CENA
-            ══════════════════════════════════════════════════════ */
-            let sceneRaf;
-            let wheelAngle = 0;
-            let pedalAngle = 0;
-            let legPhase   = 0;
-            let dustTimer  = 0;
-
-            /* ══════════════════════════════════════════════════════
-               ANIMACAO DA CENA — POr DO SOL
-            ══════════════════════════════════════════════════════ */
-            let sceneOff   = 0;
-            let birdPhase  = 0;
-            let lastTs     = performance.now();
-
-            function animateScene(ts) {
-                sceneRaf = requestAnimationFrame(animateScene);
-                const dt      = Math.min((ts - lastTs) / 1000, 0.05);
-                lastTs        = ts;
-                const spd     = state.currentSpeedKmh;
-                const factor  = spd / 55;
-                sceneOff     += factor * 200 * dt;
-                birdPhase    += dt;
-
-                const W = 400, H = 240, HY = 145, VX = 200;
-                const roadLX = y => VX * (1 - (y - HY) / (H - HY));
-                const roadRX = y => VX + VX * ((y - HY) / (H - HY));
-
-                // Nuvens
-                const clouds = [
-                    { el: document.getElementById('cloud1'), bx: 80,  sp: 0.1  },
-                    { el: document.getElementById('cloud2'), bx: 260, sp: 0.06 },
-                    { el: document.getElementById('cloud3'), bx: 340, sp: 0.13 },
-                ];
-                clouds.forEach(cl => {
-                    if (!cl.el) return;
-                    const cx = ((cl.bx - sceneOff * cl.sp) % (W + 120) + W + 120) % (W + 120) - 60;
-                    cl.el.setAttribute('transform', `translate(${cx - cl.bx}, 0)`);
-                });
-
-                // Passaros
-                const birdsG = document.getElementById('birds');
-                if (birdsG) {
-                    birdsG.innerHTML = '';
-                    for (let i = 0; i < 5; i++) {
-                        const bx  = ((i * 85 + 30 - sceneOff * 0.18) % (W + 60) + W + 60) % (W + 60) - 30;
-                        const by  = 28 + (i * 13) % 28;
-                        const sc  = 0.6 + (i * 0.17) % 0.5;
-                        const flap = Math.sin(birdPhase * 3 + i * 1.2) * 4 * sc;
-                        const g = document.createElementNS('http://www.w3.org/2000/svg','g');
-                        g.setAttribute('transform', `translate(${bx},${by})`);
-                        g.setAttribute('opacity', '0.8');
-                        const p1 = document.createElementNS('http://www.w3.org/2000/svg','path');
-                        p1.setAttribute('d', `M0,0 Q${-7*sc},${flap} ${-14*sc},0`);
-                        p1.setAttribute('stroke','#2a0a1a');
-                        p1.setAttribute('stroke-width', 1.2*sc);
-                        p1.setAttribute('fill','none');
-                        const p2 = document.createElementNS('http://www.w3.org/2000/svg','path');
-                        p2.setAttribute('d', `M0,0 Q${7*sc},${flap} ${14*sc},0`);
-                        p2.setAttribute('stroke','#2a0a1a');
-                        p2.setAttribute('stroke-width', 1.2*sc);
-                        p2.setAttribute('fill','none');
-                        g.appendChild(p1); g.appendChild(p2);
-                        birdsG.appendChild(g);
-                    }
-                }
-
-                // Faixas tracejadas
-                const dashG = document.getElementById('road-dashes');
-                if (dashG) {
-                    dashG.innerHTML = '';
-                    for (let i = 0; i < 8; i++) {
-                        const frac = ((i / 8) + (sceneOff * 0.0022)) % 1;
-                        const y1   = HY + frac * (H - HY);
-                        const y2   = HY + Math.min(frac + 1/8/1.8, 1) * (H - HY);
-                        const line = document.createElementNS('http://www.w3.org/2000/svg','line');
-                        line.setAttribute('x1', VX); line.setAttribute('y1', y1);
-                        line.setAttribute('x2', VX); line.setAttribute('y2', y2);
-                        line.setAttribute('stroke','rgba(255,255,255,0.7)');
-                        line.setAttribute('stroke-width', 1 + frac * 5);
-                        line.setAttribute('stroke-linecap','round');
-                        dashG.appendChild(line);
-                    }
-                }
-
-                // Arvores
-                const treesG = document.getElementById('trees-group');
-                if (treesG) {
-                    treesG.innerHTML = '';
-                    for (let i = 0; i < 10; i++) {
-                        const frac = ((i / 10) + (sceneOff * 0.0028)) % 1;
-                        const y    = HY + frac * (H - HY);
-                        const lx   = roadLX(y);
-                        const rx   = roadRX(y);
-                        const sc2  = 0.1 + frac * 0.9;
-                        const h    = (32 + (i * 11) % 18) * sc2;
-                        const dark = i % 2 === 0;
-                        const gap  = 5 + frac * 22;
-                        [[lx - gap - h * 0.3, y], [rx + gap, y]].forEach(([tx, ty], side) => {
-                            const g   = document.createElementNS('http://www.w3.org/2000/svg','g');
-                            g.setAttribute('transform', `translate(${tx},${ty})`);
-                            const w   = h * 0.55;
-                            const tw2 = Math.max(1.5, h * 0.1);
-                            const trunk = document.createElementNS('http://www.w3.org/2000/svg','rect');
-                            trunk.setAttribute('x', -tw2/2); trunk.setAttribute('y', 0);
-                            trunk.setAttribute('width', tw2); trunk.setAttribute('height', h*0.22);
-                            trunk.setAttribute('fill','#2a1a08');
-                            const b1 = document.createElementNS('http://www.w3.org/2000/svg','polygon');
-                            b1.setAttribute('points',`0,${-h*0.55} ${-w*0.65},0 ${w*0.65},0`);
-                            b1.setAttribute('fill', dark ? '#0f2a0f' : '#1a3a10');
-                            const b2 = document.createElementNS('http://www.w3.org/2000/svg','polygon');
-                            b2.setAttribute('points',`0,${-h*0.85} ${-w*0.5},${-h*0.35} ${w*0.5},${-h*0.35}`);
-                            b2.setAttribute('fill', dark ? '#162a12' : '#224015');
-                            g.appendChild(trunk); g.appendChild(b1); g.appendChild(b2);
-                            treesG.appendChild(g);
-                        });
-                    }
-                }
-
-                // HUD velocidade e tempo
-                const hudSpeed = document.getElementById('hud-speed');
-                const hudTime  = document.getElementById('hud-time');
-                const dispTime = document.getElementById('display-time');
-                if (hudSpeed) hudSpeed.textContent = state.currentSpeedKmh.toFixed(1);
-                if (hudTime && dispTime) hudTime.textContent = dispTime.textContent;
-            }
-
-
-
-            /* ══════════════════════════════════════════════════════
-               PARTICULAS DE POEIRA
-            ══════════════════════════════════════════════════════ */
-            function spawnDust() {
-                const d = document.createElement('div');
-                d.className = 'dust';
-                d.style.left = (Math.random() * 20) + 'px';
-                d.style.top  = (Math.random() * 6) + 'px';
-                els.dustContainer.appendChild(d);
-                setTimeout(() => d.remove(), 900);
-            }
-
-            /* ══════════════════════════════════════════════════════
-               GRAFICO DE VELOCIDADE (Canvas)
-            ══════════════════════════════════════════════════════ */
-            function drawSpeedChart() {
-                const canvas = els.speedCanvas;
-                const dpr    = window.devicePixelRatio || 1;
-                const rect   = canvas.getBoundingClientRect();
-                canvas.width  = rect.width  * dpr;
-                canvas.height = rect.height * dpr;
-                const ctx = canvas.getContext('2d');
-                ctx.scale(dpr, dpr);
-                const w = rect.width;
-                const h = rect.height;
-
-                ctx.clearRect(0, 0, w, h);
-
-                const history = state.speedHistory;
-                if (history.length < 2) return;
-
-                const maxVal = Math.max(MAX_SPEED_KMH, ...history) * 1.1;
-                const step   = w / (CHART_POINTS - 1);
-
-                // Grade
-                ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-                ctx.lineWidth   = 1;
-                for (let i = 0; i <= 3; i++) {
-                    const y = h - (i / 3) * h;
-                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-                }
-
-                // Gradiente da linha
-                const grad = ctx.createLinearGradient(0, 0, w, 0);
-                grad.addColorStop(0,   'rgba(0,229,255,0.3)');
-                grad.addColorStop(0.7, 'rgba(0,229,255,0.8)');
-                grad.addColorStop(1,   '#ff3d6b');
-
-                // Area preenchida
-                ctx.beginPath();
-                history.forEach((val, i) => {
-                    const x = i * step;
-                    const y = h - (val / maxVal) * h;
-                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-                });
-                ctx.lineTo((history.length - 1) * step, h);
-                ctx.lineTo(0, h);
-                ctx.closePath();
-                ctx.fillStyle = 'rgba(0,229,255,0.08)';
-                ctx.fill();
-
-                // Linha
-                ctx.beginPath();
-                history.forEach((val, i) => {
-                    const x = i * step;
-                    const y = h - (val / maxVal) * h;
-                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-                });
-                ctx.strokeStyle = grad;
-                ctx.lineWidth   = 2;
-                ctx.lineJoin    = 'round';
-                ctx.stroke();
-
-                // Ponto atual
-                const last = history[history.length - 1];
-                const lx   = (history.length - 1) * step;
-                const ly   = h - (last / maxVal) * h;
-                ctx.beginPath();
-                ctx.arc(lx, ly, 3, 0, Math.PI * 2);
-                ctx.fillStyle = '#ff3d6b';
-                ctx.fill();
-            }
-
-            /* ══════════════════════════════════════════════════════
-               BLUETOOTH
-            ══════════════════════════════════════════════════════ */
             if (!navigator.bluetooth) {
                 els.noBtBanner.style.display = 'block';
                 state.isDemoMode = true;
                 els.btnConnect.textContent = 'INICIAR DEMO';
             }
 
+            // Carrega configuracoes salvas
+            (function loadSavedConfig() {
+                const savedUrl    = localStorage.getItem('vt_gas_url');
+                const savedCirc   = localStorage.getItem('vt_circ');
+                const savedWeight = localStorage.getItem('vt_weight');
+                const savedMeta   = localStorage.getItem('vt_meta');
+                if (savedUrl)    els.inputGasUrl.value          = savedUrl;
+                if (savedCirc)   els.inputCirc.value            = savedCirc;
+                if (savedWeight) $('input-weight') && ($('input-weight').value = savedWeight);
+                if (savedMeta)   $('input-meta')   && ($('input-meta').value   = savedMeta);
+            })();
+
+            /* BLUETOOTH */
             async function connectBluetooth() {
                 try {
                     showToast('Abrindo seletor Bluetooth...');
@@ -961,9 +448,7 @@
                 processRevData(cumWheelRevs, lastWheelEvent);
             }
 
-            /* ══════════════════════════════════════════════════════
-               CALCULO CSC
-            ══════════════════════════════════════════════════════ */
+            /* CALCULO CSC */
             function processRevData(cumRevs, eventTime) {
                 if (state.prevRevs === null) { state.prevRevs = cumRevs; state.prevEventTime = eventTime; return; }
                 let deltaRevs = cumRevs - state.prevRevs;
@@ -973,7 +458,6 @@
                 const deltaTimeSec = deltaTime / 1024;
                 state.prevRevs = cumRevs; state.prevEventTime = eventTime;
                 if (deltaTimeSec <= 0 || !state.isTraining || state.isPaused) return;
-                // Descarta leituras fisicamente impossiveis (acima de 80 km/h)
                 const speedCheck = ((deltaRevs * state.circumferenceMm) / 1000 / deltaTimeSec) * 3.6;
                 if (speedCheck > 80) { state.prevRevs = cumRevs; state.prevEventTime = eventTime; return; }
                 const distM    = (deltaRevs * state.circumferenceMm) / 1000;
@@ -986,35 +470,34 @@
                 updateTrainingDisplay();
             }
 
-            /* ══════════════════════════════════════════════════════
-               TIMER
-            ══════════════════════════════════════════════════════ */
+            /* TIMER */
             let timerInterval;
             function startTimer() {
                 clearInterval(timerInterval);
                 timerInterval = setInterval(() => { if (!state.isPaused) updateTrainingDisplay(); }, 1000);
             }
-
             function getElapsedMs() {
                 if (!state.startTime) return 0;
                 const now    = Date.now();
                 const paused = state.isPaused ? (now - state.pauseStart) : 0;
                 return now - state.startTime - state.pausedMs - paused;
             }
-
             function formatTime(ms) {
                 const s = Math.floor(ms / 1000);
                 return [Math.floor(s/3600), Math.floor((s%3600)/60), s%60].map(n => String(n).padStart(2,'0')).join(':');
             }
 
-            /* ══════════════════════════════════════════════════════
-               DISPLAY
-            ══════════════════════════════════════════════════════ */
+            /* DISPLAY */
             function updateSpeedHistory(spd) {
                 state.speedHistory.push(spd);
                 if (state.speedHistory.length > CHART_POINTS) state.speedHistory.shift();
                 els.speedChartCurrent.textContent = spd.toFixed(1) + ' km/h';
                 drawSpeedChart();
+            }
+            function calcCalorias(distKm, avgKmh) {
+                // MET estimado: lento<15=6, moderado<25=8, rapido>=25=10
+                const met = avgKmh < 15 ? 6 : avgKmh < 25 ? 8 : 10;
+                return Math.round(distKm * state.weightKg * met * 0.06);
             }
 
             function updateTrainingDisplay() {
@@ -1022,16 +505,192 @@
                 const elapsedSec = elapsedMs / 1000;
                 const distKm     = state.totalDistM / 1000;
                 const avgKmh     = elapsedSec > 0 ? (distKm / (elapsedSec / 3600)) : 0;
-                els.displayTime.textContent  = formatTime(elapsedMs);
-                els.displaySpeed.textContent = state.currentSpeedKmh.toFixed(1);
-                els.displayDist.textContent  = distKm.toFixed(2);
-                els.displayAvg.textContent   = avgKmh.toFixed(1);
-                els.displayMax.textContent   = state.maxSpeedKmh.toFixed(1);
+                const timeStr    = formatTime(elapsedMs);
+                const dispTime   = $('display-time');
+                if (dispTime) dispTime.textContent = timeStr;
+                els.displayDist.textContent = distKm.toFixed(2);
+                els.displayAvg.textContent  = avgKmh.toFixed(1);
+                els.displayMax.textContent  = state.maxSpeedKmh.toFixed(1);
+
+                // Calorias
+                const cal = calcCalorias(distKm, avgKmh);
+                const dispCal = $('display-cal');
+                if (dispCal) dispCal.textContent = cal;
+
+                // Meta de distancia
+                const metaBar  = $('meta-bar');
+                const metaLbl  = $('meta-label');
+                const metaRem  = $('meta-remaining');
+                if (metaBar && state.metaKm > 0) {
+                    const pct       = Math.min((distKm / state.metaKm) * 100, 100);
+                    const faltam    = Math.max(state.metaKm - distKm, 0);
+                    metaBar.style.width = pct + '%';
+                    if (metaLbl) metaLbl.textContent = state.metaKm + ' km';
+                    if (metaRem) metaRem.textContent = pct >= 100
+                        ? 'Meta atingida! 🎉'
+                        : 'Faltam ' + faltam.toFixed(2) + ' km';
+                }
+            }
+            function drawSpeedChart() {
+                const canvas = els.speedCanvas;
+                const dpr    = window.devicePixelRatio || 1;
+                const rect   = canvas.getBoundingClientRect();
+                canvas.width  = rect.width  * dpr;
+                canvas.height = rect.height * dpr;
+                const ctx = canvas.getContext('2d');
+                ctx.scale(dpr, dpr);
+                const w = rect.width, h = rect.height;
+                ctx.clearRect(0, 0, w, h);
+                const history = state.speedHistory;
+                if (history.length < 2) return;
+                const maxVal = Math.max(MAX_SPEED_KMH, ...history) * 1.1;
+                const step   = w / (CHART_POINTS - 1);
+                const grad = ctx.createLinearGradient(0, 0, w, 0);
+                grad.addColorStop(0,   'rgba(0,229,255,0.3)');
+                grad.addColorStop(0.7, 'rgba(0,229,255,0.8)');
+                grad.addColorStop(1,   '#ff3d6b');
+                ctx.beginPath();
+                history.forEach((val, i) => {
+                    const x = i * step, y = h - (val / maxVal) * h;
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                });
+                ctx.lineTo((history.length-1)*step, h); ctx.lineTo(0, h); ctx.closePath();
+                ctx.fillStyle = 'rgba(0,229,255,0.08)'; ctx.fill();
+                ctx.beginPath();
+                history.forEach((val, i) => {
+                    const x = i * step, y = h - (val / maxVal) * h;
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                });
+                ctx.strokeStyle = grad; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.stroke();
+                const last = history[history.length-1];
+                ctx.beginPath();
+                ctx.arc((history.length-1)*step, h-(last/maxVal)*h, 3, 0, Math.PI*2);
+                ctx.fillStyle = '#ff3d6b'; ctx.fill();
             }
 
-            /* ══════════════════════════════════════════════════════
-               CONTROLES
-            ══════════════════════════════════════════════════════ */
+            /* ANIMACAO DA CENA */
+            let sceneRaf;
+            let sceneOff   = 0;
+            let birdPhase  = 0;
+            let lastTs     = performance.now();
+
+            function animateScene(ts) {
+                sceneRaf = requestAnimationFrame(animateScene);
+                const dt     = Math.min((ts - lastTs) / 1000, 0.05);
+                lastTs       = ts;
+                const factor = state.currentSpeedKmh / 55;
+                sceneOff    += factor * 200 * dt;
+                birdPhase   += dt;
+
+                const W = 400, H = 210, HY = 128, VX = 200;
+                const roadLX = y => VX * (1 - (y - HY) / (H - HY));
+                const roadRX = y => VX + VX * ((y - HY) / (H - HY));
+
+                // Nuvens
+                [['cloud1',80,0.1],['cloud2',260,0.06],['cloud3',340,0.13]].forEach(([id,bx,sp]) => {
+                    const el = $(id);
+                    if (el) el.setAttribute('transform', `translate(${((bx - sceneOff*sp) % (W+120) + W+120) % (W+120) - 60 - bx}, 0)`);
+                });
+
+                // Passaros
+                const birdsG = $('birds');
+                if (birdsG) {
+                    birdsG.innerHTML = '';
+                    for (let i = 0; i < 5; i++) {
+                        const bx   = ((i*85+30 - sceneOff*0.18) % (W+60) + W+60) % (W+60) - 30;
+                        const by   = 28 + (i*13) % 28;
+                        const sc   = 0.6 + (i*0.17) % 0.5;
+                        const flap = Math.sin(birdPhase*3 + i*1.2) * 4 * sc;
+                        const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+                        g.setAttribute('transform',`translate(${bx},${by})`);
+                        g.setAttribute('opacity','0.8');
+                        const p1 = document.createElementNS('http://www.w3.org/2000/svg','path');
+                        p1.setAttribute('d',`M0,0 Q${-7*sc},${flap} ${-14*sc},0`);
+                        p1.setAttribute('stroke','#2a0a1a'); p1.setAttribute('stroke-width',1.2*sc); p1.setAttribute('fill','none');
+                        const p2 = document.createElementNS('http://www.w3.org/2000/svg','path');
+                        p2.setAttribute('d',`M0,0 Q${7*sc},${flap} ${14*sc},0`);
+                        p2.setAttribute('stroke','#2a0a1a'); p2.setAttribute('stroke-width',1.2*sc); p2.setAttribute('fill','none');
+                        g.appendChild(p1); g.appendChild(p2);
+                        birdsG.appendChild(g);
+                    }
+                }
+
+                // Faixas
+                const dashG = $('road-dashes');
+                if (dashG) {
+                    dashG.innerHTML = '';
+                    for (let i = 0; i < 8; i++) {
+                        const frac = ((i/8) + (sceneOff*0.0022)) % 1;
+                        const y1   = HY + frac*(H-HY);
+                        const y2   = HY + Math.min(frac+1/8/1.8,1)*(H-HY);
+                        const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+                        line.setAttribute('x1',VX); line.setAttribute('y1',y1);
+                        line.setAttribute('x2',VX); line.setAttribute('y2',y2);
+                        line.setAttribute('stroke','rgba(255,255,255,0.7)');
+                        line.setAttribute('stroke-width', 1+frac*5);
+                        line.setAttribute('stroke-linecap','round');
+                        dashG.appendChild(line);
+                    }
+                }
+
+                // Arvores
+                const treesG = $('trees-group');
+                if (treesG) {
+                    treesG.innerHTML = '';
+                    for (let i = 0; i < 10; i++) {
+                        const frac = ((i/10) + (sceneOff*0.0028)) % 1;
+                        const y    = HY + frac*(H-HY);
+                        const lx   = roadLX(y);
+                        const rx   = roadRX(y);
+                        const sc2  = 0.1 + frac*0.9;
+                        const h    = (32+(i*11)%18)*sc2;
+                        const dark = i%2===0;
+                        const gap  = 5+frac*22;
+                        [[lx-gap-h*0.3,y],[rx+gap,y]].forEach(([tx,ty]) => {
+                            const g  = document.createElementNS('http://www.w3.org/2000/svg','g');
+                            g.setAttribute('transform',`translate(${tx},${ty})`);
+                            const wt = h*0.55, tw2 = Math.max(1.5,h*0.1);
+                            const tr = document.createElementNS('http://www.w3.org/2000/svg','rect');
+                            tr.setAttribute('x',-tw2/2); tr.setAttribute('y',0);
+                            tr.setAttribute('width',tw2); tr.setAttribute('height',h*0.22);
+                            tr.setAttribute('fill','#2a1a08');
+                            const b1 = document.createElementNS('http://www.w3.org/2000/svg','polygon');
+                            b1.setAttribute('points',`0,${-h*0.55} ${-wt*0.65},0 ${wt*0.65},0`);
+                            b1.setAttribute('fill', dark?'#0f2a0f':'#1a3a10');
+                            const b2 = document.createElementNS('http://www.w3.org/2000/svg','polygon');
+                            b2.setAttribute('points',`0,${-h*0.85} ${-wt*0.5},${-h*0.35} ${wt*0.5},${-h*0.35}`);
+                            b2.setAttribute('fill', dark?'#162a12':'#224015');
+                            g.appendChild(tr); g.appendChild(b1); g.appendChild(b2);
+                            treesG.appendChild(g);
+                        });
+                    }
+                }
+
+                // HUDs
+                const hudSpeed = $('hud-speed');
+                const hudTime  = $('hud-time');
+                const dispTime = $('display-time');
+                if (hudSpeed) hudSpeed.textContent = state.currentSpeedKmh.toFixed(1);
+                if (hudTime && dispTime) hudTime.textContent = dispTime.textContent;
+            }
+
+            /* WAKELOCK */
+            async function requestWakeLock() {
+                if ('wakeLock' in navigator) {
+                    try {
+                        state.wakeLock = await navigator.wakeLock.request('screen');
+                        state.wakeLock.addEventListener('release', () => { state.wakeLock = null; });
+                    } catch (err) { console.warn('WakeLock:', err); }
+                }
+            }
+            async function releaseWakeLock() {
+                if (state.wakeLock) { await state.wakeLock.release(); state.wakeLock = null; }
+            }
+            document.addEventListener('visibilitychange', async () => {
+                if (document.visibilityState === 'visible' && state.isTraining && !state.isPaused) await requestWakeLock();
+            });
+
+            /* CONTROLES */
             function startTraining() {
                 state.isTraining = true; state.isPaused = false;
                 state.startTime  = Date.now(); state.pausedMs = 0;
@@ -1046,7 +705,6 @@
                 requestWakeLock();
                 if (state.isDemoMode) startDemo();
             }
-
             function pauseTraining() {
                 if (state.isPaused) {
                     state.pausedMs += Date.now() - state.pauseStart;
@@ -1064,7 +722,6 @@
                     if (state.isDemoMode) stopDemo();
                 }
             }
-
             function finishTraining() {
                 state.isTraining = false;
                 clearInterval(timerInterval);
@@ -1094,7 +751,12 @@
                 els.saveStatus.innerHTML = 'Aguardando envio...';
                 els.btnSave.disabled = false;
                 els.statusDot.className = 'status-dot connected';
+                // Calorias no summary
+                const sumCal = $('sum-cal');
+                if (sumCal) sumCal.textContent = calcCalorias(state.result.distKm, state.result.avgKmh);
                 showScreen('summary');
+                // Confete
+                lancarConfete();
             }
 
             async function saveToSheets() {
@@ -1119,9 +781,29 @@
                 }
             }
 
-            /* ══════════════════════════════════════════════════════
-               DEMO MODE
-            ══════════════════════════════════════════════════════ */
+            /* CONFETE */
+            function lancarConfete() {
+                const wrap = $('confete-wrap');
+                if (!wrap) return;
+                wrap.innerHTML = '';
+                wrap.classList.add('ativo');
+                const cores = ['#00e5ff','#ff3d6b','#00ff9d','#ffaa00','#a855f7','#f5b942'];
+                for (let i = 0; i < 80; i++) {
+                    const el  = document.createElement('div');
+                    el.className = 'confete';
+                    el.style.left     = Math.random() * 100 + 'vw';
+                    el.style.background = cores[Math.floor(Math.random() * cores.length)];
+                    el.style.animationDuration  = (1.5 + Math.random() * 2.5) + 's';
+                    el.style.animationDelay     = (Math.random() * 1.2) + 's';
+                    el.style.width  = (6 + Math.random() * 6) + 'px';
+                    el.style.height = (10 + Math.random() * 8) + 'px';
+                    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                    wrap.appendChild(el);
+                }
+                setTimeout(() => { wrap.classList.remove('ativo'); wrap.innerHTML = ''; }, 5000);
+            }
+
+            /* DEMO */
             function startDemo() {
                 stopDemo();
                 state.demoRevAcc  = state.prevRevs || 0;
@@ -1136,59 +818,28 @@
                     processRevData(Math.round(state.demoRevAcc), Math.round(state.demoTimeAcc) % 0xFFFF);
                 }, 500);
             }
-
             function stopDemo() {
                 if (state.demoInterval) { clearInterval(state.demoInterval); state.demoInterval = null; }
             }
 
-            /* ══════════════════════════════════════════════════════
-               WAKELOCK — Tela sempre ativa
-            ══════════════════════════════════════════════════════ */
-            async function requestWakeLock() {
-                if ('wakeLock' in navigator) {
-                    try {
-                        state.wakeLock = await navigator.wakeLock.request('screen');
-                        state.wakeLock.addEventListener('release', () => {
-                            state.wakeLock = null;
-                        });
-                        console.log('WakeLock ativo');
-                    } catch (err) {
-                        console.warn('WakeLock nao disponivel:', err);
-                    }
-                }
-            }
-
-            async function releaseWakeLock() {
-                if (state.wakeLock) {
-                    await state.wakeLock.release();
-                    state.wakeLock = null;
-                    console.log('WakeLock liberado');
-                }
-            }
-
-            // Reativa o WakeLock se a aba voltar ao foco
-            document.addEventListener('visibilitychange', async () => {
-                if (document.visibilityState === 'visible' && state.isTraining && !state.isPaused) {
-                    await requestWakeLock();
-                }
-            });
-
-            /* ══════════════════════════════════════════════════════
-               EVENTOS
-            ══════════════════════════════════════════════════════ */
+            /* EVENTOS */
             els.btnConnect.addEventListener('click', () => {
                 state.circumferenceMm = parseInt(els.inputCirc.value) || 2180;
                 state.gasUrl          = els.inputGasUrl.value.trim();
+                state.weightKg        = parseFloat($('input-weight')?.value) || 70;
+                state.metaKm          = parseFloat($('input-meta')?.value)   || 10;
+                // Salva no localStorage
+                localStorage.setItem('vt_gas_url', state.gasUrl);
+                localStorage.setItem('vt_circ',    state.circumferenceMm);
+                localStorage.setItem('vt_weight',  state.weightKg);
+                localStorage.setItem('vt_meta',    state.metaKm);
                 if (state.isDemoMode) {
                     state.isConnected = true;
                     els.statusDot.className = 'status-dot connected';
                     showToast('Modo demo ativo');
                     startTraining();
-                } else {
-                    connectBluetooth();
-                }
+                } else { connectBluetooth(); }
             });
-
             els.btnPause.addEventListener('click', pauseTraining);
             els.btnFinish.addEventListener('click', finishTraining);
             els.btnSave.addEventListener('click', saveToSheets);
@@ -1200,9 +851,7 @@
                 els.statusDot.className = 'status-dot';
                 showScreen('connect');
             });
-
             window.addEventListener('resize', drawSpeedChart);
-
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
             }
