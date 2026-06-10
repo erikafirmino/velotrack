@@ -87,6 +87,9 @@ els.btnNew.addEventListener('click',    () => Training.reset());
 
 window.addEventListener('resize', () => Chart.draw());
 
+/* ── Spotify ── */
+Spotify.init();
+
 /* ── PWA Service Worker ── */
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
