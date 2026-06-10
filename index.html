@@ -12,113 +12,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
-        <style>
-            *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-            :root {
-                --bg: #0a0a0f; --surface: #111118; --surface2: #1a1a24;
-                --border: #2a2a3a; --accent: #00e5ff; --accent2: #ff3d6b;
-                --text: #e8e8f0; --muted: #6b6b80; --success: #00ff9d; --warn: #ffaa00;
-                --font-display: 'Bebas Neue', sans-serif;
-                --font-mono: 'DM Mono', monospace;
-                --font-body: 'Inter', sans-serif;
-                --r: 8px; --r-lg: 16px;
-            }
-            html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
-            #app { min-height: 100dvh; display: flex; flex-direction: column; }
-            header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 0; position: relative; z-index: 10; }
-            .logo { font-family: var(--font-display); font-size: 24px; letter-spacing: 3px; color: var(--accent); text-shadow: 0 0 20px rgba(0,229,255,0.4); }
-            .logo span { color: var(--text); opacity: 0.5; }
-            .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); transition: all 0.4s ease; }
-            .status-dot.connected { background: var(--success); box-shadow: 0 0 12px var(--success); animation: pdot 2s ease-in-out infinite; }
-            .status-dot.training  { background: var(--accent2); box-shadow: 0 0 12px var(--accent2); animation: pdot 1s ease-in-out infinite; }
-            @keyframes pdot { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
-            .screen { display: none; flex: 1; flex-direction: column; animation: fadeIn 0.4s ease; }
-            .screen.active { display: flex; }
-            @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-
-            /* CONNECT */
-            #screen-connect { align-items: center; justify-content: center; gap: 24px; text-align: center; padding: 24px; }
-            .connect-icon { width: 110px; height: 110px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; position: relative; }
-            .connect-icon::before { content:''; position:absolute; inset:-2px; border-radius:50%; border:2px solid transparent; border-top-color:var(--accent); animation:spin 2s linear infinite; }
-            @keyframes spin { to{transform:rotate(360deg)} }
-            .connect-icon svg { width: 44px; height: 44px; color: var(--accent); }
-            .connect-title { font-family: var(--font-display); font-size: 38px; letter-spacing: 4px; line-height: 1.1; }
-            .connect-sub { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 280px; }
-            .config-card { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 18px; display: flex; flex-direction: column; gap: 14px; }
-            .config-card label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; display: block; margin-bottom: 5px; }
-            input[type="number"], input[type="text"] { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); font-family: var(--font-mono); font-size: 15px; padding: 10px 13px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
-            input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,229,255,0.1); }
-            .no-bt-banner { display: none; background: rgba(255,61,107,0.1); border: 1px solid var(--accent2); border-radius: var(--r); padding: 10px 14px; font-size: 12px; color: var(--accent2); line-height: 1.5; }
-            .btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 15px 20px; border-radius: var(--r-lg); font-family: var(--font-display); font-size: 19px; letter-spacing: 3px; cursor: pointer; border: none; transition: all 0.2s ease; }
-            .btn-primary { background: var(--accent); color: #000; box-shadow: 0 0 30px rgba(0,229,255,0.25); }
-            .btn-primary:hover { box-shadow: 0 0 40px rgba(0,229,255,0.4); transform: translateY(-1px); }
-            .btn-danger { background: var(--accent2); color: #fff; box-shadow: 0 0 20px rgba(255,61,107,0.2); }
-            .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
-            .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
-            .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-            /* TRAINING */
-            #screen-training { gap: 0; }
-            .scene {
-                width: 100%;
-                height: 210px;
-                max-height: 210px;
-                overflow: hidden;
-                flex-shrink: 0;
-                background: #1a0a2e;
-                display: block;
-            }
-            .scene > *:not(#scene-svg) { display: none !important; }
-
-            .dashboard {
-                flex: 1;
-                background: var(--bg);
-                padding: 12px 16px 16px;
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-            .speed-chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 8px 12px 6px; }
-            .speed-chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-            .speed-chart-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
-            #speed-chart-current { font-family: var(--font-mono); font-size: 11px; color: var(--accent); }
-            #speed-canvas { width: 100%; height: 36px; display: block; }
-            .metrics-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-            .metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 12px 8px; text-align: center; }
-            .metric-card-label { font-family: var(--font-mono); font-size: 8px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
-            .metric-card-value { font-family: var(--font-display); font-size: 32px; line-height: 1; letter-spacing: 1px; }
-            .metric-card-unit  { font-family: var(--font-mono); font-size: 9px; color: var(--muted); margin-top: 2px; }
-            .controls { display: flex; gap: 10px; flex-shrink: 0; }
-            .controls .btn { font-size: 18px; letter-spacing: 2px; padding: 16px; }
-
-            /* SUMMARY */
-            #screen-summary { gap: 16px; padding: 20px; }
-            .summary-header { text-align: center; padding: 4px 0; }
-            .summary-title { font-family: var(--font-display); font-size: 44px; letter-spacing: 5px; color: var(--success); text-shadow: 0 0 30px rgba(0,255,157,0.3); }
-            .summary-date  { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; color: var(--muted); margin-top: 4px; }
-            .summary-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-            .summary-card  { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 18px 14px; text-align: center; }
-            .summary-card.wide { grid-column: 1 / -1; }
-            .summary-card-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
-            .summary-card-value { font-family: var(--font-display); font-size: 46px; line-height: 1; }
-            .summary-card.wide .summary-card-value { font-size: 60px; color: var(--accent); text-shadow: 0 0 25px rgba(0,229,255,0.3); }
-            .summary-card-unit { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 3px; }
-            .save-status { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); font-family: var(--font-mono); font-size: 12px; color: var(--muted); min-height: 44px; }
-            .save-status.saving { color: var(--warn);    border-color: var(--warn); }
-            .save-status.saved  { color: var(--success); border-color: var(--success); }
-            .save-status.error  { color: var(--accent2); border-color: var(--accent2); }
-            /* Confete */
-            .confete-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 500; overflow: hidden; display: none; }
-            .confete-wrap.ativo { display: block; }
-            .confete { position: absolute; top: -10px; width: 8px; height: 14px; border-radius: 2px; animation: confeteFall linear forwards; }
-            @keyframes confeteFall {
-                0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
-                100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-            }
-
-            #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--font-mono); font-size: 12px; padding: 10px 18px; border-radius: var(--r); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index: 1000; white-space: nowrap; pointer-events: none; }
-            #toast.show { transform: translateX(-50%) translateY(0); }
-        </style>
+        <link rel="stylesheet" href="css/style.css" />
     </head>
     <body>
         <div id="app">
@@ -127,7 +21,7 @@
                 <div id="status-dot" class="status-dot"></div>
             </header>
 
-            <!-- CONNECT -->
+            <!-- ══ CONNECT ══ -->
             <section id="screen-connect" class="screen active">
                 <div class="connect-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -159,10 +53,12 @@
                 <button class="btn btn-primary" id="btn-connect">CONECTAR SENSOR</button>
             </section>
 
-            <!-- TRAINING -->
+            <!-- ══ TRAINING ══ -->
             <section id="screen-training" class="screen">
                 <div class="scene">
-                    <svg id="scene-svg" width="100%" height="210" viewBox="0 0 400 210" preserveAspectRatio="xMidYMid slice" style="display:block;width:100%;height:210px;max-height:210px;">
+                    <svg id="scene-svg" width="100%" height="210" viewBox="0 0 400 210"
+                         preserveAspectRatio="xMidYMid slice"
+                         style="display:block;width:100%;height:210px;max-height:210px;">
                         <defs>
                             <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="0%"   stop-color="#1a0a2e"/>
@@ -189,20 +85,20 @@
 
                         <!-- Nuvens -->
                         <g id="cloud1" opacity="0.55">
-                            <ellipse cx="80"  cy="26" rx="42" ry="13"  fill="#c05020" opacity="0.4"/>
-                            <ellipse cx="80"  cy="24" rx="42" ry="13"  fill="#ffb87a"/>
-                            <ellipse cx="46"  cy="19" rx="22" ry="16"  fill="#ffb87a"/>
-                            <ellipse cx="104" cy="20" rx="17" ry="13"  fill="white" opacity="0.6"/>
+                            <ellipse cx="80"  cy="26" rx="42" ry="13" fill="#c05020" opacity="0.4"/>
+                            <ellipse cx="80"  cy="24" rx="42" ry="13" fill="#ffb87a"/>
+                            <ellipse cx="46"  cy="19" rx="22" ry="16" fill="#ffb87a"/>
+                            <ellipse cx="104" cy="20" rx="17" ry="13" fill="white" opacity="0.6"/>
                         </g>
                         <g id="cloud2" opacity="0.4">
-                            <ellipse cx="260" cy="39" rx="28" ry="9"   fill="#c05020" opacity="0.4"/>
-                            <ellipse cx="260" cy="38" rx="28" ry="9"   fill="#e8907a"/>
-                            <ellipse cx="234" cy="33" rx="15" ry="11"  fill="#e8907a"/>
-                            <ellipse cx="278" cy="34" rx="11" ry="8"   fill="white" opacity="0.6"/>
+                            <ellipse cx="260" cy="39" rx="28" ry="9"  fill="#c05020" opacity="0.4"/>
+                            <ellipse cx="260" cy="38" rx="28" ry="9"  fill="#e8907a"/>
+                            <ellipse cx="234" cy="33" rx="15" ry="11" fill="#e8907a"/>
+                            <ellipse cx="278" cy="34" rx="11" ry="8"  fill="white" opacity="0.6"/>
                         </g>
                         <g id="cloud3" opacity="0.3">
-                            <ellipse cx="340" cy="19" rx="22" ry="7"   fill="#ffcc99"/>
-                            <ellipse cx="320" cy="15" rx="12" ry="9"   fill="#ffcc99"/>
+                            <ellipse cx="340" cy="19" rx="22" ry="7" fill="#ffcc99"/>
+                            <ellipse cx="320" cy="15" rx="12" ry="9" fill="#ffcc99"/>
                         </g>
 
                         <!-- Passaros -->
@@ -221,14 +117,14 @@
                         <line x1="198" y1="128" x2="0"   y2="210" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
                         <line x1="202" y1="128" x2="400" y2="210" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
 
-                        <!-- Faixas -->
+                        <!-- Faixas animadas -->
                         <g id="road-dashes"></g>
 
                         <!-- Grama lateral -->
                         <polygon points="0,134 198,134 0,210"    fill="#2a5a18"/>
                         <polygon points="202,134 400,134 400,210" fill="#2a5a18"/>
 
-                        <!-- Arvores -->
+                        <!-- Arvores animadas -->
                         <g id="trees-group" clip-path="url(#sceneclip)"></g>
 
                         <!-- HUD velocidade -->
@@ -255,6 +151,7 @@
                         </div>
                         <canvas id="speed-canvas"></canvas>
                     </div>
+
                     <div class="metrics-row">
                         <div class="metric-card">
                             <div class="metric-card-label">DIST</div>
@@ -272,6 +169,7 @@
                             <div class="metric-card-unit">km/h</div>
                         </div>
                     </div>
+
                     <div class="metrics-row">
                         <div class="metric-card">
                             <div class="metric-card-label">CALORIAS</div>
@@ -279,21 +177,24 @@
                             <div class="metric-card-unit">kcal</div>
                         </div>
                         <div class="metric-card" id="meta-card" style="grid-column:2/-1;text-align:left;padding:10px 12px;">
-                            <div class="metric-card-label" style="margin-bottom:6px;">META <span id="meta-label" style="color:var(--accent)">-- km</span></div>
+                            <div class="metric-card-label" style="margin-bottom:6px;">
+                                META <span id="meta-label" style="color:var(--accent)">-- km</span>
+                            </div>
                             <div style="height:8px;background:var(--surface2);border-radius:99px;overflow:hidden;">
                                 <div id="meta-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--success));border-radius:99px;transition:width 0.5s ease;"></div>
                             </div>
                             <div id="meta-remaining" style="font-family:var(--font-mono);font-size:9px;color:var(--muted);margin-top:4px;">Configure uma meta</div>
                         </div>
                     </div>
+
                     <div class="controls">
                         <button class="btn btn-outline" id="btn-pause" style="flex:0 0 auto;width:auto;padding:13px 18px;">II</button>
-                        <button class="btn btn-danger" id="btn-finish">FINALIZAR</button>
+                        <button class="btn btn-danger"  id="btn-finish">FINALIZAR</button>
                     </div>
                 </div>
             </section>
 
-            <!-- SUMMARY -->
+            <!-- ══ SUMMARY ══ -->
             <section id="screen-summary" class="screen">
                 <div class="summary-header">
                     <div class="summary-title">TREINO<br>CONCLUIDO</div>
@@ -340,521 +241,14 @@
         <div id="toast"></div>
         <div class="confete-wrap" id="confete-wrap"></div>
 
-        <script>
-            const CSC_SERVICE_UUID          = 0x1816;
-            const CSC_MEASUREMENT_CHAR_UUID = 0x2A5B;
-            const MAX_SPEED_KMH             = 60;
-            const CHART_POINTS              = 40;
-
-            const state = {
-                isConnected: false, isTraining: false, isPaused: false, isDemoMode: false,
-                btDevice: null, btChar: null,
-                circumferenceMm: 2180, gasUrl: '',
-                startTime: null, pausedMs: 0, pauseStart: null,
-                totalDistM: 0, currentSpeedKmh: 0, maxSpeedKmh: 0, totalRevs: 0,
-                prevRevs: null, prevEventTime: null,
-                demoInterval: null, demoRevAcc: 0, demoTimeAcc: 0,
-                result: null, wakeLock: null,
-                weightKg: 70, metaKm: 10,
-                speedHistory: [],
-            };
-
-            const $ = id => document.getElementById(id);
-            const screens = { connect: $('screen-connect'), training: $('screen-training'), summary: $('screen-summary') };
-            const els = {
-                statusDot: $('status-dot'), noBtBanner: $('no-bt-banner'),
-                inputCirc: $('input-circ'), inputGasUrl: $('input-gas-url'),
-                btnConnect: $('btn-connect'),
-                displayDist: $('display-dist'), displayAvg: $('display-avg'), displayMax: $('display-max'),
-                btnPause: $('btn-pause'), btnFinish: $('btn-finish'),
-                summaryDate: $('summary-date'), sumDist: $('sum-dist'),
-                sumTime: $('sum-time'), sumAvg: $('sum-avg'), sumMax: $('sum-max'), sumRev: $('sum-rev'),
-                saveStatus: $('save-status'), btnSave: $('btn-save'), btnNew: $('btn-new'),
-                toast: $('toast'), speedChartCurrent: $('speed-chart-current'), speedCanvas: $('speed-canvas'),
-            };
-
-            function showScreen(name) {
-                Object.entries(screens).forEach(([k, el]) => el.classList.toggle('active', k === name));
-            }
-
-            let toastTimer;
-            function showToast(msg, dur = 3000) {
-                els.toast.textContent = msg;
-                els.toast.classList.add('show');
-                clearTimeout(toastTimer);
-                toastTimer = setTimeout(() => els.toast.classList.remove('show'), dur);
-            }
-
-            if (!navigator.bluetooth) {
-                els.noBtBanner.style.display = 'block';
-                state.isDemoMode = true;
-                els.btnConnect.textContent = 'INICIAR DEMO';
-            }
-
-            // Carrega configuracoes salvas
-            (function loadSavedConfig() {
-                const savedUrl    = localStorage.getItem('vt_gas_url');
-                const savedCirc   = localStorage.getItem('vt_circ');
-                const savedWeight = localStorage.getItem('vt_weight');
-                const savedMeta   = localStorage.getItem('vt_meta');
-                if (savedUrl)    els.inputGasUrl.value          = savedUrl;
-                if (savedCirc)   els.inputCirc.value            = savedCirc;
-                if (savedWeight) $('input-weight') && ($('input-weight').value = savedWeight);
-                if (savedMeta)   $('input-meta')   && ($('input-meta').value   = savedMeta);
-            })();
-
-            /* BLUETOOTH */
-            async function connectBluetooth() {
-                try {
-                    showToast('Abrindo seletor Bluetooth...');
-                    const device = await navigator.bluetooth.requestDevice({
-                        filters: [{ services: [CSC_SERVICE_UUID] }],
-                        optionalServices: [CSC_SERVICE_UUID],
-                    });
-                    state.btDevice = device;
-                    device.addEventListener('gattserverdisconnected', onDisconnected);
-                    showToast('Conectando a ' + device.name + '...');
-                    const server  = await device.gatt.connect();
-                    const service = await server.getPrimaryService(CSC_SERVICE_UUID);
-                    const char    = await service.getCharacteristic(CSC_MEASUREMENT_CHAR_UUID);
-                    state.btChar  = char;
-                    char.addEventListener('characteristicvaluechanged', onCSCData);
-                    await char.startNotifications();
-                    onConnected(device.name || 'Sensor CSC');
-                } catch (err) {
-                    if (err.name !== 'NotFoundError') showToast('Erro: ' + err.message);
-                }
-            }
-
-            function onConnected(name) {
-                state.isConnected = true;
-                els.statusDot.className = 'status-dot connected';
-                showToast('Conectado: ' + name);
-                startTraining();
-            }
-
-            function onDisconnected() {
-                state.isConnected = false;
-                if (state.isTraining) { els.statusDot.className = 'status-dot'; pauseTraining(); }
-            }
-
-            function onCSCData(event) {
-                const data  = event.target.value;
-                const flags = data.getUint8(0);
-                if ((flags & 0x01) === 0) return;
-                let offset = 1;
-                const cumWheelRevs   = data.getUint32(offset, true); offset += 4;
-                const lastWheelEvent = data.getUint16(offset, true);
-                processRevData(cumWheelRevs, lastWheelEvent);
-            }
-
-            /* CALCULO CSC */
-            function processRevData(cumRevs, eventTime) {
-                if (state.prevRevs === null) { state.prevRevs = cumRevs; state.prevEventTime = eventTime; return; }
-                let deltaRevs = cumRevs - state.prevRevs;
-                if (deltaRevs < 0) deltaRevs += 0xFFFFFFFF;
-                let deltaTime = eventTime - state.prevEventTime;
-                if (deltaTime < 0) deltaTime += 0xFFFF;
-                const deltaTimeSec = deltaTime / 1024;
-                state.prevRevs = cumRevs; state.prevEventTime = eventTime;
-                if (deltaTimeSec <= 0 || !state.isTraining || state.isPaused) return;
-                const speedCheck = ((deltaRevs * state.circumferenceMm) / 1000 / deltaTimeSec) * 3.6;
-                if (speedCheck > 80) { state.prevRevs = cumRevs; state.prevEventTime = eventTime; return; }
-                const distM    = (deltaRevs * state.circumferenceMm) / 1000;
-                const speedKmh = (distM / deltaTimeSec) * 3.6;
-                state.totalDistM     += distM;
-                state.totalRevs       = cumRevs;
-                state.currentSpeedKmh = speedKmh;
-                if (speedKmh > state.maxSpeedKmh) state.maxSpeedKmh = speedKmh;
-                updateSpeedHistory(speedKmh);
-                updateTrainingDisplay();
-            }
-
-            /* TIMER */
-            let timerInterval;
-            function startTimer() {
-                clearInterval(timerInterval);
-                timerInterval = setInterval(() => { if (!state.isPaused) updateTrainingDisplay(); }, 1000);
-            }
-            function getElapsedMs() {
-                if (!state.startTime) return 0;
-                const now    = Date.now();
-                const paused = state.isPaused ? (now - state.pauseStart) : 0;
-                return now - state.startTime - state.pausedMs - paused;
-            }
-            function formatTime(ms) {
-                const s = Math.floor(ms / 1000);
-                return [Math.floor(s/3600), Math.floor((s%3600)/60), s%60].map(n => String(n).padStart(2,'0')).join(':');
-            }
-
-            /* DISPLAY */
-            function updateSpeedHistory(spd) {
-                state.speedHistory.push(spd);
-                if (state.speedHistory.length > CHART_POINTS) state.speedHistory.shift();
-                els.speedChartCurrent.textContent = spd.toFixed(1) + ' km/h';
-                drawSpeedChart();
-            }
-            function calcCalorias(distKm, avgKmh) {
-                // MET estimado: lento<15=6, moderado<25=8, rapido>=25=10
-                const met = avgKmh < 15 ? 6 : avgKmh < 25 ? 8 : 10;
-                return Math.round(distKm * state.weightKg * met * 0.06);
-            }
-
-            function updateTrainingDisplay() {
-                const elapsedMs  = getElapsedMs();
-                const elapsedSec = elapsedMs / 1000;
-                const distKm     = state.totalDistM / 1000;
-                const avgKmh     = elapsedSec > 0 ? (distKm / (elapsedSec / 3600)) : 0;
-                const timeStr    = formatTime(elapsedMs);
-                const dispTime   = $('display-time');
-                if (dispTime) dispTime.textContent = timeStr;
-                els.displayDist.textContent = distKm.toFixed(2);
-                els.displayAvg.textContent  = avgKmh.toFixed(1);
-                els.displayMax.textContent  = state.maxSpeedKmh.toFixed(1);
-
-                // Calorias
-                const cal = calcCalorias(distKm, avgKmh);
-                const dispCal = $('display-cal');
-                if (dispCal) dispCal.textContent = cal;
-
-                // Meta de distancia
-                const metaBar  = $('meta-bar');
-                const metaLbl  = $('meta-label');
-                const metaRem  = $('meta-remaining');
-                if (metaBar && state.metaKm > 0) {
-                    const pct       = Math.min((distKm / state.metaKm) * 100, 100);
-                    const faltam    = Math.max(state.metaKm - distKm, 0);
-                    metaBar.style.width = pct + '%';
-                    if (metaLbl) metaLbl.textContent = state.metaKm + ' km';
-                    if (metaRem) metaRem.textContent = pct >= 100
-                        ? 'Meta atingida! 🎉'
-                        : 'Faltam ' + faltam.toFixed(2) + ' km';
-                }
-            }
-            function drawSpeedChart() {
-                const canvas = els.speedCanvas;
-                const dpr    = window.devicePixelRatio || 1;
-                const rect   = canvas.getBoundingClientRect();
-                canvas.width  = rect.width  * dpr;
-                canvas.height = rect.height * dpr;
-                const ctx = canvas.getContext('2d');
-                ctx.scale(dpr, dpr);
-                const w = rect.width, h = rect.height;
-                ctx.clearRect(0, 0, w, h);
-                const history = state.speedHistory;
-                if (history.length < 2) return;
-                const maxVal = Math.max(MAX_SPEED_KMH, ...history) * 1.1;
-                const step   = w / (CHART_POINTS - 1);
-                const grad = ctx.createLinearGradient(0, 0, w, 0);
-                grad.addColorStop(0,   'rgba(0,229,255,0.3)');
-                grad.addColorStop(0.7, 'rgba(0,229,255,0.8)');
-                grad.addColorStop(1,   '#ff3d6b');
-                ctx.beginPath();
-                history.forEach((val, i) => {
-                    const x = i * step, y = h - (val / maxVal) * h;
-                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-                });
-                ctx.lineTo((history.length-1)*step, h); ctx.lineTo(0, h); ctx.closePath();
-                ctx.fillStyle = 'rgba(0,229,255,0.08)'; ctx.fill();
-                ctx.beginPath();
-                history.forEach((val, i) => {
-                    const x = i * step, y = h - (val / maxVal) * h;
-                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-                });
-                ctx.strokeStyle = grad; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.stroke();
-                const last = history[history.length-1];
-                ctx.beginPath();
-                ctx.arc((history.length-1)*step, h-(last/maxVal)*h, 3, 0, Math.PI*2);
-                ctx.fillStyle = '#ff3d6b'; ctx.fill();
-            }
-
-            /* ANIMACAO DA CENA */
-            let sceneRaf;
-            let sceneOff   = 0;
-            let birdPhase  = 0;
-            let lastTs     = performance.now();
-
-            function animateScene(ts) {
-                sceneRaf = requestAnimationFrame(animateScene);
-                const dt     = Math.min((ts - lastTs) / 1000, 0.05);
-                lastTs       = ts;
-                const factor = state.currentSpeedKmh / 55;
-                sceneOff    += factor * 200 * dt;
-                birdPhase   += dt;
-
-                const W = 400, H = 210, HY = 128, VX = 200;
-                const roadLX = y => VX * (1 - (y - HY) / (H - HY));
-                const roadRX = y => VX + VX * ((y - HY) / (H - HY));
-
-                // Nuvens
-                [['cloud1',80,0.1],['cloud2',260,0.06],['cloud3',340,0.13]].forEach(([id,bx,sp]) => {
-                    const el = $(id);
-                    if (el) el.setAttribute('transform', `translate(${((bx - sceneOff*sp) % (W+120) + W+120) % (W+120) - 60 - bx}, 0)`);
-                });
-
-                // Passaros
-                const birdsG = $('birds');
-                if (birdsG) {
-                    birdsG.innerHTML = '';
-                    for (let i = 0; i < 5; i++) {
-                        const bx   = ((i*85+30 - sceneOff*0.18) % (W+60) + W+60) % (W+60) - 30;
-                        const by   = 28 + (i*13) % 28;
-                        const sc   = 0.6 + (i*0.17) % 0.5;
-                        const flap = Math.sin(birdPhase*3 + i*1.2) * 4 * sc;
-                        const g = document.createElementNS('http://www.w3.org/2000/svg','g');
-                        g.setAttribute('transform',`translate(${bx},${by})`);
-                        g.setAttribute('opacity','0.8');
-                        const p1 = document.createElementNS('http://www.w3.org/2000/svg','path');
-                        p1.setAttribute('d',`M0,0 Q${-7*sc},${flap} ${-14*sc},0`);
-                        p1.setAttribute('stroke','#2a0a1a'); p1.setAttribute('stroke-width',1.2*sc); p1.setAttribute('fill','none');
-                        const p2 = document.createElementNS('http://www.w3.org/2000/svg','path');
-                        p2.setAttribute('d',`M0,0 Q${7*sc},${flap} ${14*sc},0`);
-                        p2.setAttribute('stroke','#2a0a1a'); p2.setAttribute('stroke-width',1.2*sc); p2.setAttribute('fill','none');
-                        g.appendChild(p1); g.appendChild(p2);
-                        birdsG.appendChild(g);
-                    }
-                }
-
-                // Faixas
-                const dashG = $('road-dashes');
-                if (dashG) {
-                    dashG.innerHTML = '';
-                    for (let i = 0; i < 8; i++) {
-                        const frac = ((i/8) + (sceneOff*0.0022)) % 1;
-                        const y1   = HY + frac*(H-HY);
-                        const y2   = HY + Math.min(frac+1/8/1.8,1)*(H-HY);
-                        const line = document.createElementNS('http://www.w3.org/2000/svg','line');
-                        line.setAttribute('x1',VX); line.setAttribute('y1',y1);
-                        line.setAttribute('x2',VX); line.setAttribute('y2',y2);
-                        line.setAttribute('stroke','rgba(255,255,255,0.7)');
-                        line.setAttribute('stroke-width', 1+frac*5);
-                        line.setAttribute('stroke-linecap','round');
-                        dashG.appendChild(line);
-                    }
-                }
-
-                // Arvores
-                const treesG = $('trees-group');
-                if (treesG) {
-                    treesG.innerHTML = '';
-                    for (let i = 0; i < 10; i++) {
-                        const frac = ((i/10) + (sceneOff*0.0028)) % 1;
-                        const y    = HY + frac*(H-HY);
-                        const lx   = roadLX(y);
-                        const rx   = roadRX(y);
-                        const sc2  = 0.1 + frac*0.9;
-                        const h    = (32+(i*11)%18)*sc2;
-                        const dark = i%2===0;
-                        const gap  = 5+frac*22;
-                        [[lx-gap-h*0.3,y],[rx+gap,y]].forEach(([tx,ty]) => {
-                            const g  = document.createElementNS('http://www.w3.org/2000/svg','g');
-                            g.setAttribute('transform',`translate(${tx},${ty})`);
-                            const wt = h*0.55, tw2 = Math.max(1.5,h*0.1);
-                            const tr = document.createElementNS('http://www.w3.org/2000/svg','rect');
-                            tr.setAttribute('x',-tw2/2); tr.setAttribute('y',0);
-                            tr.setAttribute('width',tw2); tr.setAttribute('height',h*0.22);
-                            tr.setAttribute('fill','#2a1a08');
-                            const b1 = document.createElementNS('http://www.w3.org/2000/svg','polygon');
-                            b1.setAttribute('points',`0,${-h*0.55} ${-wt*0.65},0 ${wt*0.65},0`);
-                            b1.setAttribute('fill', dark?'#0f2a0f':'#1a3a10');
-                            const b2 = document.createElementNS('http://www.w3.org/2000/svg','polygon');
-                            b2.setAttribute('points',`0,${-h*0.85} ${-wt*0.5},${-h*0.35} ${wt*0.5},${-h*0.35}`);
-                            b2.setAttribute('fill', dark?'#162a12':'#224015');
-                            g.appendChild(tr); g.appendChild(b1); g.appendChild(b2);
-                            treesG.appendChild(g);
-                        });
-                    }
-                }
-
-                // HUDs
-                const hudSpeed = $('hud-speed');
-                const hudTime  = $('hud-time');
-                const dispTime = $('display-time');
-                if (hudSpeed) hudSpeed.textContent = state.currentSpeedKmh.toFixed(1);
-                if (hudTime && dispTime) hudTime.textContent = dispTime.textContent;
-            }
-
-            /* WAKELOCK */
-            async function requestWakeLock() {
-                if ('wakeLock' in navigator) {
-                    try {
-                        state.wakeLock = await navigator.wakeLock.request('screen');
-                        state.wakeLock.addEventListener('release', () => { state.wakeLock = null; });
-                    } catch (err) { console.warn('WakeLock:', err); }
-                }
-            }
-            async function releaseWakeLock() {
-                if (state.wakeLock) { await state.wakeLock.release(); state.wakeLock = null; }
-            }
-            document.addEventListener('visibilitychange', async () => {
-                if (document.visibilityState === 'visible' && state.isTraining && !state.isPaused) await requestWakeLock();
-            });
-
-            /* CONTROLES */
-            function startTraining() {
-                state.isTraining = true; state.isPaused = false;
-                state.startTime  = Date.now(); state.pausedMs = 0;
-                state.totalDistM = 0; state.currentSpeedKmh = 0;
-                state.maxSpeedKmh = 0; state.totalRevs = 0;
-                state.prevRevs = null; state.prevEventTime = null;
-                state.speedHistory = [];
-                els.statusDot.className = 'status-dot training';
-                showScreen('training');
-                startTimer();
-                requestAnimationFrame(animateScene);
-                requestWakeLock();
-                if (state.isDemoMode) startDemo();
-            }
-            function pauseTraining() {
-                if (state.isPaused) {
-                    state.pausedMs += Date.now() - state.pauseStart;
-                    state.isPaused  = false; state.pauseStart = null;
-                    els.btnPause.textContent = 'II';
-                    els.statusDot.className  = 'status-dot training';
-                    requestWakeLock();
-                    if (state.isDemoMode) startDemo();
-                } else {
-                    state.isPaused  = true; state.pauseStart = Date.now();
-                    state.currentSpeedKmh = 0;
-                    els.btnPause.textContent = '▶';
-                    els.statusDot.className  = 'status-dot connected';
-                    releaseWakeLock();
-                    if (state.isDemoMode) stopDemo();
-                }
-            }
-            function finishTraining() {
-                state.isTraining = false;
-                clearInterval(timerInterval);
-                cancelAnimationFrame(sceneRaf);
-                stopDemo();
-                releaseWakeLock();
-                const elapsedMs  = getElapsedMs();
-                const elapsedSec = elapsedMs / 1000;
-                const distKm     = state.totalDistM / 1000;
-                const avgKmh     = elapsedSec > 0 ? (distKm / (elapsedSec / 3600)) : 0;
-                state.result = {
-                    date: new Date().toLocaleString('pt-BR'),
-                    duration: formatTime(elapsedMs),
-                    distKm: parseFloat(distKm.toFixed(3)),
-                    avgKmh: parseFloat(avgKmh.toFixed(1)),
-                    maxKmh: parseFloat(state.maxSpeedKmh.toFixed(1)),
-                    revs:   state.totalRevs,
-                };
-                const m = Math.floor(elapsedMs / 60000);
-                els.summaryDate.textContent = state.result.date;
-                els.sumDist.textContent = state.result.distKm.toFixed(2);
-                els.sumTime.textContent = String(Math.floor(m/60)).padStart(2,'0') + ':' + String(m%60).padStart(2,'0');
-                els.sumAvg.textContent  = state.result.avgKmh.toFixed(1);
-                els.sumMax.textContent  = state.result.maxKmh.toFixed(1);
-                els.sumRev.textContent  = state.result.revs.toLocaleString('pt-BR');
-                els.saveStatus.className = 'save-status';
-                els.saveStatus.innerHTML = 'Aguardando envio...';
-                els.btnSave.disabled = false;
-                els.statusDot.className = 'status-dot connected';
-                // Calorias no summary
-                const sumCal = $('sum-cal');
-                if (sumCal) sumCal.textContent = calcCalorias(state.result.distKm, state.result.avgKmh);
-                showScreen('summary');
-                // Confete
-                lancarConfete();
-            }
-
-            async function saveToSheets() {
-                const url = state.gasUrl.trim();
-                if (!url) { showToast('Configure a URL do Apps Script primeiro!'); return; }
-                if (!state.result) return;
-                els.btnSave.disabled = true;
-                els.saveStatus.className = 'save-status saving';
-                els.saveStatus.innerHTML = 'Enviando dados...';
-                try {
-                    const params = new URLSearchParams();
-                    params.append('payload', JSON.stringify(state.result));
-                    await fetch(url, { method: 'POST', mode: 'no-cors', body: params });
-                    els.saveStatus.className = 'save-status saved';
-                    els.saveStatus.innerHTML = 'Salvo no Google Sheets!';
-                    showToast('Treino salvo com sucesso!');
-                } catch (err) {
-                    els.saveStatus.className = 'save-status error';
-                    els.saveStatus.innerHTML = 'Erro: ' + err.message;
-                    showToast('Falha ao salvar: ' + err.message);
-                    els.btnSave.disabled = false;
-                }
-            }
-
-            /* CONFETE */
-            function lancarConfete() {
-                const wrap = $('confete-wrap');
-                if (!wrap) return;
-                wrap.innerHTML = '';
-                wrap.classList.add('ativo');
-                const cores = ['#00e5ff','#ff3d6b','#00ff9d','#ffaa00','#a855f7','#f5b942'];
-                for (let i = 0; i < 80; i++) {
-                    const el  = document.createElement('div');
-                    el.className = 'confete';
-                    el.style.left     = Math.random() * 100 + 'vw';
-                    el.style.background = cores[Math.floor(Math.random() * cores.length)];
-                    el.style.animationDuration  = (1.5 + Math.random() * 2.5) + 's';
-                    el.style.animationDelay     = (Math.random() * 1.2) + 's';
-                    el.style.width  = (6 + Math.random() * 6) + 'px';
-                    el.style.height = (10 + Math.random() * 8) + 'px';
-                    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-                    wrap.appendChild(el);
-                }
-                setTimeout(() => { wrap.classList.remove('ativo'); wrap.innerHTML = ''; }, 5000);
-            }
-
-            /* DEMO */
-            function startDemo() {
-                stopDemo();
-                state.demoRevAcc  = state.prevRevs || 0;
-                state.demoTimeAcc = state.prevEventTime || 0;
-                state.demoInterval = setInterval(() => {
-                    if (!state.isTraining || state.isPaused) return;
-                    const targetSpeed = 18 + Math.random() * 17;
-                    const revPerSec   = (targetSpeed / 3.6) / (state.circumferenceMm / 1000);
-                    state.demoRevAcc  += revPerSec * 0.5;
-                    state.demoTimeAcc += 512;
-                    if (state.demoTimeAcc > 0xFFFF) state.demoTimeAcc -= 0xFFFF;
-                    processRevData(Math.round(state.demoRevAcc), Math.round(state.demoTimeAcc) % 0xFFFF);
-                }, 500);
-            }
-            function stopDemo() {
-                if (state.demoInterval) { clearInterval(state.demoInterval); state.demoInterval = null; }
-            }
-
-            /* EVENTOS */
-            els.btnConnect.addEventListener('click', () => {
-                state.circumferenceMm = parseInt(els.inputCirc.value) || 2180;
-                state.gasUrl          = els.inputGasUrl.value.trim();
-                state.weightKg        = parseFloat($('input-weight')?.value) || 70;
-                state.metaKm          = parseFloat($('input-meta')?.value)   || 10;
-                // Salva no localStorage
-                localStorage.setItem('vt_gas_url', state.gasUrl);
-                localStorage.setItem('vt_circ',    state.circumferenceMm);
-                localStorage.setItem('vt_weight',  state.weightKg);
-                localStorage.setItem('vt_meta',    state.metaKm);
-                if (state.isDemoMode) {
-                    state.isConnected = true;
-                    els.statusDot.className = 'status-dot connected';
-                    showToast('Modo demo ativo');
-                    startTraining();
-                } else { connectBluetooth(); }
-            });
-            els.btnPause.addEventListener('click', pauseTraining);
-            els.btnFinish.addEventListener('click', finishTraining);
-            els.btnSave.addEventListener('click', saveToSheets);
-            els.btnNew.addEventListener('click', () => {
-                state.result = null; state.isConnected = false; state.isPaused = false;
-                stopDemo(); cancelAnimationFrame(sceneRaf);
-                if (state.btChar) { state.btChar.stopNotifications().catch(()=>{}); state.btChar = null; }
-                if (state.btDevice && state.btDevice.gatt.connected) { state.btDevice.gatt.disconnect(); state.btDevice = null; }
-                els.statusDot.className = 'status-dot';
-                showScreen('connect');
-            });
-            window.addEventListener('resize', drawSpeedChart);
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
-            }
-        </script>
+        <!-- Scripts em ordem de dependência -->
+        <script src="js/state.js"></script>
+        <script src="js/storage.js"></script>
+        <script src="js/timer.js"></script>
+        <script src="js/chart.js"></script>
+        <script src="js/scene.js"></script>
+        <script src="js/bluetooth.js"></script>
+        <script src="js/training.js"></script>
+        <script src="js/app.js"></script>
     </body>
 </html>
