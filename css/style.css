@@ -461,3 +461,108 @@ input:focus {
 }
 
 #toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ══════════════════════════════════════════════════════════════
+   SPOTIFY PLAYER
+══════════════════════════════════════════════════════════════ */
+.spotify-wrap {
+    background: var(--surface);
+    border: 1px solid #1db954;
+    border-radius: var(--r-lg);
+    padding: 10px 14px;
+    margin: 0 0 4px;
+    flex-shrink: 0;
+}
+
+.spotify-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px;
+    background: #1db954;
+    color: #000;
+    border: none;
+    border-radius: var(--r);
+    font-family: var(--font-display);
+    font-size: 16px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.spotify-login-btn:hover { opacity: 0.85; }
+
+.spotify-player {
+    display: none;
+    align-items: center;
+    gap: 10px;
+}
+
+.spotify-cover {
+    width: 42px;
+    height: 42px;
+    border-radius: 4px;
+    object-fit: cover;
+    background: var(--surface2);
+    flex-shrink: 0;
+}
+
+.spotify-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.spotify-track {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.spotify-artist {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+}
+
+.spotify-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.spotify-btn {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 50%;
+    transition: background 0.15s, color 0.15s;
+    line-height: 1;
+}
+
+.spotify-btn:hover  { background: rgba(255,255,255,0.1); }
+.spotify-btn.play   { color: #1db954; font-size: 20px; }
+
+.spotify-logout {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px 4px;
+    text-decoration: underline;
+}
