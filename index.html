@@ -191,6 +191,30 @@
                         <button class="btn btn-outline" id="btn-pause" style="flex:0 0 auto;width:auto;padding:13px 18px;">II</button>
                         <button class="btn btn-danger"  id="btn-finish">FINALIZAR</button>
                     </div>
+
+                    <!-- Spotify Player -->
+                    <div class="spotify-wrap">
+                        <!-- Botão de login -->
+                        <button class="spotify-login-btn" id="spotify-login-btn" onclick="Spotify.login()">
+                            &#9654; CONECTAR SPOTIFY
+                        </button>
+
+                        <!-- Player (aparece após login) -->
+                        <div class="spotify-player" id="spotify-player">
+                            <img class="spotify-cover" id="spotify-cover" src="" alt="capa" />
+                            <div class="spotify-info">
+                                <div class="spotify-track"  id="spotify-track-name">Nenhuma música</div>
+                                <div class="spotify-artist" id="spotify-artist-name">—</div>
+                            </div>
+                            <div class="spotify-controls">
+                                <button class="spotify-btn" onclick="Spotify.previous()" title="Anterior">⏮</button>
+                                <button class="spotify-btn play" id="spotify-play-btn" onclick="Spotify.togglePlay()">▶</button>
+                                <button class="spotify-btn" onclick="Spotify.next()" title="Próxima">⏭</button>
+                                <button class="spotify-logout" onclick="Spotify.logout()">sair</button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </section>
 
@@ -249,6 +273,7 @@
         <script src="js/scene.js"></script>
         <script src="js/bluetooth.js"></script>
         <script src="js/training.js"></script>
+        <script src="js/spotify.js"></script>
         <script src="js/app.js"></script>
     </body>
 </html>
