@@ -44,4 +44,5 @@ const state = {
     // WakeLock
     wakeLock:         null,
     _resumedFromPause: false,
+    _metaAtingida:     false,
 };
