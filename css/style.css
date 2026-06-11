@@ -674,15 +674,16 @@ input:focus {
 .spotify-bottom-row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 8px;
     padding: 2px 0;
+    flex-wrap: nowrap;
 }
 
 .spotify-controls {
     display: flex;
     align-items: center;
     gap: 4px;
+    flex-shrink: 0;
 }
 
 .spotify-btn {
@@ -710,7 +711,8 @@ input:focus {
     align-items: center;
     gap: 4px;
     flex: 1;
-    max-width: 120px;
+    min-width: 0;
+    max-width: 110px;
 }
 
 .spotify-vol-icon {
@@ -724,9 +726,11 @@ input:focus {
     font-size: 9px;
     color: var(--muted);
     background: none;
-    border: none;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
     cursor: pointer;
-    padding: 4px 6px;
-    text-decoration: underline;
+    padding: 4px 8px;
+    text-decoration: none;
     flex-shrink: 0;
+    margin-left: auto;
 }
