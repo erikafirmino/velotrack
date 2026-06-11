@@ -94,61 +94,153 @@ header {
 /* ══════════════════════════════════════════════════════════════
    CONNECT
 ══════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   HOME
+══════════════════════════════════════════════════════════════ */
 #screen-connect {
     align-items: stretch;
     justify-content: center;
-    gap: 14px;
-    padding: 20px 20px 28px;
-    overflow-y: auto;
+    gap: 16px;
+    padding: 24px 20px 32px;
 }
 
-/* Hero compacto */
-.connect-hero {
+.home-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 0 8px;
+    text-align: center;
+}
+
+.home-bike-icon {
+    font-size: 52px;
+    line-height: 1;
+}
+
+.home-title {
+    font-family: var(--font-display);
+    font-size: 42px;
+    letter-spacing: 6px;
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(0,229,255,0.3);
+}
+
+.home-sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.home-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.home-btn {
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 4px 0;
+    padding: 16px 20px;
+    text-align: left;
+    justify-content: flex-start;
 }
 
-.connect-icon-small {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    border: 2px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+.home-btn-icon {
+    font-size: 24px;
     flex-shrink: 0;
 }
 
-.connect-icon-small::before {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    border-top-color: var(--accent);
-    animation: spin 2s linear infinite;
+.home-btn-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.connect-icon-small svg {
-    width: 22px;
-    height: 22px;
-    color: var(--accent);
-}
-
-.connect-title-small {
+.home-btn-title {
     font-family: var(--font-display);
-    font-size: 26px;
-    letter-spacing: 3px;
-    line-height: 1.1;
+    font-size: 20px;
+    letter-spacing: 2px;
+    line-height: 1;
+}
+
+.home-btn-sub {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    font-weight: normal;
+}
+
+.btn-primary .home-btn-sub { color: rgba(0,0,0,0.5); }
+
+/* ══════════════════════════════════════════════════════════════
+   CONFIGURAÇÕES
+══════════════════════════════════════════════════════════════ */
+#screen-config {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+}
+
+#screen-config.active { display: flex; }
+
+.config-screen-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.btn-back {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 38px;
+    height: 38px;
+    border-radius: var(--r);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.2s;
+}
+
+.btn-back:hover { border-color: var(--accent); color: var(--accent); }
+
+.config-screen-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    letter-spacing: 4px;
     color: var(--text);
 }
 
-/* Config grid 2 colunas */
+.config-screen-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.config-group { display: flex; flex-direction: column; gap: 10px; }
+
+.config-group-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
 .config-card {
     width: 100%;
     background: var(--surface);
@@ -157,23 +249,17 @@ header {
     padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-}
-
-.config-row-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 14px;
 }
 
 .config-card label {
     font-family: var(--font-mono);
-    font-size: 9px;
+    font-size: 10px;
     letter-spacing: 2px;
     color: var(--muted);
     text-transform: uppercase;
     display: block;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
 }
 
 input[type="number"],
