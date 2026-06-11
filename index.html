@@ -21,54 +21,87 @@
                 <div id="status-dot" class="status-dot"></div>
             </header>
 
-            <!-- ══ CONNECT ══ -->
+            <!-- ══ HOME ══ -->
             <section id="screen-connect" class="screen active">
-
-                <!-- Topo: logo pequeno + subtítulo -->
-                <div class="connect-hero">
-                    <div class="connect-icon-small">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
-                        </svg>
-                    </div>
-                    <div class="connect-title-small">PRONTO PARA PEDALAR?</div>
+                <div class="home-hero">
+                    <div class="home-bike-icon">🚴</div>
+                    <div class="home-title">VELOTRACK</div>
+                    <div class="home-sub">Ciclismo indoor com dados reais</div>
                 </div>
 
                 <div id="no-bt-banner" class="no-bt-banner">Modo demo ativo — use o Google Chrome para conectar o sensor.</div>
 
-                <!-- Config em grid 2 colunas para economizar espaço -->
-                <div class="config-card">
-                    <div class="config-row-2">
-                        <div>
-                            <label>Pneu (mm)</label>
-                            <input type="number" id="input-circ" value="2180" min="1500" max="2400" step="1" />
+                <div class="home-actions">
+                    <button class="btn btn-primary home-btn" id="btn-connect">
+                        <span class="home-btn-icon">🚴</span>
+                        <div class="home-btn-text">
+                            <span class="home-btn-title">INICIAR TREINO</span>
+                            <span class="home-btn-sub">Conectar sensor e pedalar</span>
                         </div>
-                        <div>
-                            <label>Peso (kg)</label>
-                            <input type="number" id="input-weight" value="70" min="30" max="200" step="1" />
+                    </button>
+
+                    <button class="btn btn-outline home-btn" id="btn-ir-config">
+                        <span class="home-btn-icon">⚙️</span>
+                        <div class="home-btn-text">
+                            <span class="home-btn-title">CONFIGURAÇÕES</span>
+                            <span class="home-btn-sub">Pneu, peso, meta e URL</span>
                         </div>
-                    </div>
-                    <div class="config-row-2">
-                        <div>
-                            <label>Meta (km)</label>
-                            <input type="number" id="input-meta" value="10" min="1" max="200" step="0.5" />
+                    </button>
+
+                    <button class="btn btn-outline home-btn" id="btn-ver-historico-home">
+                        <span class="home-btn-icon">📊</span>
+                        <div class="home-btn-text">
+                            <span class="home-btn-title">HISTÓRICO</span>
+                            <span class="home-btn-sub">Ver treinos anteriores</span>
                         </div>
-                        <div>
-                            <label>URL Apps Script</label>
-                            <input type="text" id="input-gas-url" placeholder="https://script.google.com/..." />
-                        </div>
-                    </div>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ══ CONFIGURAÇÕES ══ -->
+            <section id="screen-config" class="screen">
+                <div class="config-screen-header">
+                    <button class="btn-back" id="btn-back-config">←</button>
+                    <div class="config-screen-title">CONFIGURAÇÕES</div>
                 </div>
 
-                <!-- Botões de ação -->
-                <button class="btn btn-primary" id="btn-connect">
-                    CONECTAR SENSOR
-                </button>
-                <button class="btn btn-outline" id="btn-ver-historico-home">
-                    VER HISTÓRICO
-                </button>
+                <div class="config-screen-body">
+                    <div class="config-group">
+                        <div class="config-group-title">SENSOR E BICICLETA</div>
+                        <div class="config-card">
+                            <div>
+                                <label>Circunferência do pneu (mm)</label>
+                                <input type="number" id="input-circ" value="2180" min="1500" max="2400" step="1" />
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="config-group">
+                        <div class="config-group-title">TREINO</div>
+                        <div class="config-card">
+                            <div>
+                                <label>Seu peso (kg) — cálculo de calorias</label>
+                                <input type="number" id="input-weight" value="70" min="30" max="200" step="1" />
+                            </div>
+                            <div>
+                                <label>Meta de distância por treino (km)</label>
+                                <input type="number" id="input-meta" value="10" min="1" max="200" step="0.5" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="config-group">
+                        <div class="config-group-title">GOOGLE SHEETS</div>
+                        <div class="config-card">
+                            <div>
+                                <label>URL do Apps Script</label>
+                                <input type="text" id="input-gas-url" placeholder="https://script.google.com/macros/s/..." />
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" id="btn-salvar-config">SALVAR CONFIGURAÇÕES</button>
+                </div>
             </section>
 
             <!-- ══ TRAINING ══ -->
