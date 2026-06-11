@@ -42,6 +42,8 @@ const Spotify = {
         const verifier   = await this._generateCodeVerifier();
         const challenge  = await this._generateCodeChallenge(verifier);
         localStorage.setItem('vt_spotify_verifier', verifier);
+        // Salva a tela atual para restaurar após o redirect
+        localStorage.setItem('vt_spotify_return_screen', 'training');
 
         const params = new URLSearchParams({
             client_id:             this.CLIENT_ID,
@@ -293,7 +295,29 @@ const Spotify = {
             // Remove o code da URL sem recarregar
             window.history.replaceState({}, document.title, '/');
             const token = await this.exchangeToken(code);
-            if (token) await this.initPlayer(token);
+            if (token) {
+                await this.initPlayer(token);
+                // Restaura a tela onde estava antes do redirect
+                const returnScreen = localStorage.getItem('vt_spotify_return_screen');
+                if (returnScreen) {
+                    localStorage.removeItem('vt_spotify_return_screen');
+                    // Aguarda o DOM estar pronto e restaura o estado de treino
+                    setTimeout(() => {
+                        if (returnScreen === 'training' && typeof showScreen === 'function') {
+                            // Restaura estado mínimo para mostrar a tela de treino
+                            state.isTraining  = true;
+                            state.isConnected = true;
+                            if (typeof Training !== 'undefined') {
+                                Training.start();
+                            } else {
+                                showScreen('training');
+                            }
+                        } else {
+                            showScreen(returnScreen);
+                        }
+                    }, 800);
+                }
+            }
             return;
         }
 
