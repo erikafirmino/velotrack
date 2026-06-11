@@ -45,4 +45,6 @@ const state = {
     wakeLock:         null,
     _resumedFromPause: false,
     _metaAtingida:     false,
+    _recordeVelocidade: 0,
+    _recordeDistancia:  0,
 };
