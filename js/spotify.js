@@ -133,6 +133,11 @@ const Spotify = {
                     this._isConnected = true;
                     this._player      = player;
                     this._updateUI();
+                    // 3: Transfere automaticamente para VeloTrack
+                    setTimeout(() => this.transferToVeloTrack(), 1000);
+                    // Restaura volume salvo
+                    const savedVol = parseFloat(localStorage.getItem('vt_spotify_vol') || '0.8');
+                    player.setVolume(savedVol);
                     resolve(player);
                 });
 
@@ -146,6 +151,9 @@ const Spotify = {
                     this._isPlaying = !state.paused;
                     this._updateTrack(state.track_window.current_track);
                     this._updatePlayBtn();
+                    // 1: Progresso
+                    if (this._isPlaying) this.startProgress();
+                    else                 this.stopProgress();
                 });
 
                 player.addListener('initialization_error', ({ message }) => console.error('Spotify init:', message));
@@ -177,6 +185,61 @@ const Spotify = {
     async togglePlay() {
         if (this._isPlaying) await this.pause();
         else                 await this.play();
+    },
+
+    /* ── 2: Volume ── */
+    async setVolume(val) {
+        if (this._player) await this._player.setVolume(val);
+        localStorage.setItem('vt_spotify_vol', val);
+    },
+
+    /* ── 1: Progresso da música ── */
+    _progressInterval: null,
+
+    startProgress() {
+        this.stopProgress();
+        this._progressInterval = setInterval(async () => {
+            if (!this._player || !this._isPlaying) return;
+            const state = await this._player.getCurrentState();
+            if (!state) return;
+            const pct = (state.position / state.duration) * 100;
+            const bar = document.getElementById('spotify-progress-bar');
+            if (bar) bar.style.width = pct + '%';
+            const pos = document.getElementById('spotify-position');
+            if (pos) pos.textContent = this._formatMs(state.position);
+            const dur = document.getElementById('spotify-duration');
+            if (dur) dur.textContent = this._formatMs(state.duration);
+        }, 1000);
+    },
+
+    stopProgress() {
+        if (this._progressInterval) {
+            clearInterval(this._progressInterval);
+            this._progressInterval = null;
+        }
+    },
+
+    _formatMs(ms) {
+        const s   = Math.floor(ms / 1000);
+        const min = Math.floor(s / 60);
+        const sec = s % 60;
+        return min + ':' + String(sec).padStart(2, '0');
+    },
+
+    /* ── 3: Transfere reprodução para VeloTrack automaticamente ── */
+    async transferToVeloTrack() {
+        const token = await this.getToken();
+        if (!token || !this._deviceId) return;
+        try {
+            await fetch('https://api.spotify.com/v1/me/player', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type':  'application/json',
+                },
+                body: JSON.stringify({ device_ids: [this._deviceId], play: true }),
+            });
+        } catch (e) { console.warn('Spotify transfer:', e); }
     },
 
     /* ── UI ── */
