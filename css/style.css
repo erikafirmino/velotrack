@@ -114,8 +114,10 @@ header {
 }
 
 .home-bike-icon {
-    font-size: 52px;
-    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 12px rgba(0,229,255,0.3));
 }
 
 .home-title {
@@ -292,6 +294,8 @@ input:focus {
     color: var(--accent2);
     line-height: 1.5;
 }
+
+@keyframes homePedal { to { transform: rotate(360deg); } }
 
 /* ── Buttons ── */
 .btn {
