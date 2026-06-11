@@ -111,9 +111,36 @@ const Display = {
         els.displayAvg.textContent  = avgKmh.toFixed(1);
         els.displayMax.textContent  = state.maxSpeedKmh.toFixed(1);
 
+        // Pace (min/km)
+        const dispPace = $('display-pace');
+        if (dispPace) {
+            if (state.currentSpeedKmh > 0.5) {
+                const paceTotal = 60 / state.currentSpeedKmh;
+                const paceMin   = Math.floor(paceTotal);
+                const paceSec   = Math.round((paceTotal - paceMin) * 60);
+                dispPace.textContent = paceMin + ':' + String(paceSec).padStart(2, '0');
+            } else {
+                dispPace.textContent = '--';
+            }
+        }
+
         // Calorias
         const dispCal = $('display-cal');
         if (dispCal) dispCal.textContent = this.calcCalorias(distKm, avgKmh);
+
+        // 8: Cor de intensidade no HUD de velocidade
+        const hudSpeed = $('hud-speed');
+        if (hudSpeed) {
+            const spd = state.currentSpeedKmh;
+            let cor = '#00e5ff'; // azul — parado/lento
+            if      (spd >= 30) cor = '#ff3d6b'; // vermelho — intenso
+            else if (spd >= 20) cor = '#ffaa00'; // amarelo — moderado
+            else if (spd >= 10) cor = '#00ff9d'; // verde — leve
+            hudSpeed.setAttribute('fill', cor);
+            // Atualiza borda do HUD box
+            const hudBox = hudSpeed.previousElementSibling;
+            if (hudBox) hudBox.setAttribute('stroke', cor);
+        }
 
         // Meta
         const metaBar = $('meta-bar');
@@ -124,9 +151,27 @@ const Display = {
             const faltam = Math.max(state.metaKm - distKm, 0);
             metaBar.style.width = pct + '%';
             if (metaLbl) metaLbl.textContent = state.metaKm + ' km';
-            if (metaRem) metaRem.textContent = pct >= 100
-                ? 'Meta atingida! 🎉'
-                : 'Faltam ' + faltam.toFixed(2) + ' km';
+
+            // 9: Animação ao atingir meta
+            if (pct >= 100 && !state._metaAtingida) {
+                state._metaAtingida      = true;
+                metaBar.style.background = 'linear-gradient(90deg, #00ff9d, #00e5ff)';
+                metaBar.style.boxShadow  = '0 0 12px rgba(0,255,157,0.6)';
+                if (metaRem) metaRem.textContent = 'Meta atingida! 🎉';
+                showToast('🎉 Meta atingida! Parabens!', 4000);
+                const metaCard = $('meta-card');
+                if (metaCard) {
+                    metaCard.style.borderColor = '#00ff9d';
+                    metaCard.style.boxShadow   = '0 0 16px rgba(0,255,157,0.3)';
+                    setTimeout(() => {
+                        metaCard.style.borderColor = '';
+                        metaCard.style.boxShadow   = '';
+                    }, 4000);
+                }
+            } else if (pct < 100) {
+                state._metaAtingida = false;
+                if (metaRem) metaRem.textContent = 'Faltam ' + faltam.toFixed(2) + ' km';
+            }
         }
     },
 
