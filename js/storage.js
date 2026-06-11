@@ -58,4 +58,50 @@ const Storage = {
             els.btnSave.disabled = false;
         }
     },
+    /* ── Recordes pessoais ── */
+    loadRecordes() {
+        state._recordeVelocidade = parseFloat(localStorage.getItem('vt_rec_vel')  || '0');
+        state._recordeDistancia  = parseFloat(localStorage.getItem('vt_rec_dist') || '0');
+    },
+
+    saveRecordes() {
+        localStorage.setItem('vt_rec_vel',  state._recordeVelocidade);
+        localStorage.setItem('vt_rec_dist', state._recordeDistancia);
+    },
+
+    checkRecordes(distKm, maxKmh) {
+        let novoRecorde = false;
+
+        if (maxKmh > state._recordeVelocidade) {
+            state._recordeVelocidade = maxKmh;
+            novoRecorde = true;
+            showToast('🏆 Novo recorde de velocidade: ' + maxKmh.toFixed(1) + ' km/h!', 4000);
+            Som.recorde();
+        }
+
+        if (distKm > state._recordeDistancia) {
+            state._recordeDistancia = distKm;
+            novoRecorde = true;
+            showToast('🏆 Novo recorde de distancia: ' + distKm.toFixed(2) + ' km!', 4000);
+        }
+
+        if (novoRecorde) this.saveRecordes();
+        return novoRecorde;
+    },
+
+    /* ── Histórico local ── */
+    saveHistorico(result) {
+        const historico = this.loadHistorico();
+        historico.unshift(result); // mais recente primeiro
+        if (historico.length > 30) historico.pop(); // mantém 30 treinos
+        localStorage.setItem('vt_historico', JSON.stringify(historico));
+    },
+
+    loadHistorico() {
+        try {
+            return JSON.parse(localStorage.getItem('vt_historico') || '[]');
+        } catch {
+            return [];
+        }
+    },
 };
