@@ -90,7 +90,13 @@ els.btnNew.addEventListener('click',    () => Training.reset());
 
 window.addEventListener('resize', () => Chart.draw());
 
-// Histórico
+// Histórico a partir da home
+document.getElementById('btn-ver-historico-home')?.addEventListener('click', () => {
+    // Mesmo comportamento do btn-historico
+    document.getElementById('btn-historico')?.click();
+});
+
+// Histórico a partir do summary
 document.getElementById('btn-historico')?.addEventListener('click', () => {
     // Recordes
     const recVel  = $('rec-vel');
@@ -132,7 +138,10 @@ document.getElementById('btn-historico')?.addEventListener('click', () => {
     showScreen('historico');
 });
 
-document.getElementById('btn-back-historico')?.addEventListener('click', () => showScreen('summary'));
+document.getElementById('btn-back-historico')?.addEventListener('click', () => {
+    // Volta para connect se não há resultado de treino, senão para summary
+    showScreen(state.result ? 'summary' : 'connect');
+});
 
 /* ── Spotify ── */
 Spotify.init();
