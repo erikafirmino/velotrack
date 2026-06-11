@@ -35,7 +35,7 @@ const els = {
 
 /* ── Navegação ── */
 function showScreen(name) {
-    ['connect', 'training', 'summary', 'historico'].forEach(k => {
+    ['connect', 'training', 'summary', 'historico', 'config'].forEach(k => {
         const el = $('screen-' + k);
         if (el) el.classList.toggle('active', k === name);
     });
@@ -66,12 +66,11 @@ function showToast(msg, dur = 3000) {
 
 /* ── Event Listeners ── */
 els.btnConnect.addEventListener('click', () => {
-    state.circumferenceMm = parseInt(els.inputCirc.value)              || 2180;
-    state.gasUrl          = els.inputGasUrl.value.trim();
-    state.weightKg        = parseFloat($('input-weight')?.value)       || 70;
-    state.metaKm          = parseFloat($('input-meta')?.value)         || 10;
-
-    Storage.saveConfig();
+    // Carrega config salva antes de conectar
+    state.circumferenceMm = parseInt(localStorage.getItem('vt_circ'))    || 2180;
+    state.gasUrl          = localStorage.getItem('vt_gas_url')           || '';
+    state.weightKg        = parseFloat(localStorage.getItem('vt_weight')) || 70;
+    state.metaKm          = parseFloat(localStorage.getItem('vt_meta'))   || 10;
 
     if (state.isDemoMode) {
         state.isConnected       = true;
@@ -83,6 +82,27 @@ els.btnConnect.addEventListener('click', () => {
     }
 });
 
+// Ir para configurações
+document.getElementById('btn-ir-config')?.addEventListener('click', () => {
+    showScreen('config');
+});
+
+// Salvar configurações
+document.getElementById('btn-salvar-config')?.addEventListener('click', () => {
+    state.circumferenceMm = parseInt($('input-circ')?.value)    || 2180;
+    state.gasUrl          = $('input-gas-url')?.value.trim()    || '';
+    state.weightKg        = parseFloat($('input-weight')?.value) || 70;
+    state.metaKm          = parseFloat($('input-meta')?.value)   || 10;
+    Storage.saveConfig();
+    showToast('Configurações salvas!');
+    setTimeout(() => showScreen('connect'), 800);
+});
+
+// Voltar das configurações
+document.getElementById('btn-back-config')?.addEventListener('click', () => {
+    showScreen('connect');
+});
+
 els.btnPause.addEventListener('click',  () => Training.pause());
 els.btnFinish.addEventListener('click', () => Training.finish());
 els.btnSave.addEventListener('click',   () => Storage.saveToSheets());
@@ -92,7 +112,6 @@ window.addEventListener('resize', () => Chart.draw());
 
 // Histórico a partir da home
 document.getElementById('btn-ver-historico-home')?.addEventListener('click', () => {
-    // Mesmo comportamento do btn-historico
     document.getElementById('btn-historico')?.click();
 });
 
