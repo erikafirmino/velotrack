@@ -301,18 +301,9 @@ const Spotify = {
                 const returnScreen = localStorage.getItem('vt_spotify_return_screen');
                 if (returnScreen) {
                     localStorage.removeItem('vt_spotify_return_screen');
-                    // Aguarda o DOM estar pronto e restaura o estado de treino
+                    // Apenas navega para a tela — não reinicia o treino
                     setTimeout(() => {
-                        if (returnScreen === 'training' && typeof showScreen === 'function') {
-                            // Restaura estado mínimo para mostrar a tela de treino
-                            state.isTraining  = true;
-                            state.isConnected = true;
-                            if (typeof Training !== 'undefined') {
-                                Training.start();
-                            } else {
-                                showScreen('training');
-                            }
-                        } else {
+                        if (typeof showScreen === 'function') {
                             showScreen(returnScreen);
                         }
                     }, 800);
