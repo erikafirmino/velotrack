@@ -24,7 +24,48 @@
             <!-- ══ HOME ══ -->
             <section id="screen-connect" class="screen active">
                 <div class="home-hero">
-                    <div class="home-bike-icon">🚴</div>
+                    <div class="home-bike-icon">
+                        <svg viewBox="0 0 80 52" fill="none" xmlns="http://www.w3.org/2000/svg" width="90" height="60">
+                            <!-- Roda traseira -->
+                            <circle cx="16" cy="38" r="12" stroke="#aaa" stroke-width="2" fill="none"/>
+                            <circle cx="16" cy="38" r="3" fill="#888"/>
+                            <g id="home-spokes-rear" stroke="#888" stroke-width="1">
+                                <line x1="16" y1="26" x2="16" y2="50"/>
+                                <line x1="4"  y1="38" x2="28" y2="38"/>
+                                <line x1="7.5" y1="29.5" x2="24.5" y2="46.5"/>
+                                <line x1="24.5" y1="29.5" x2="7.5" y2="46.5"/>
+                            </g>
+                            <!-- Roda dianteira -->
+                            <circle cx="64" cy="38" r="12" stroke="#aaa" stroke-width="2" fill="none"/>
+                            <circle cx="64" cy="38" r="3" fill="#888"/>
+                            <g id="home-spokes-front" stroke="#888" stroke-width="1">
+                                <line x1="64" y1="26" x2="64" y2="50"/>
+                                <line x1="52" y1="38" x2="76" y2="38"/>
+                                <line x1="55.5" y1="29.5" x2="72.5" y2="46.5"/>
+                                <line x1="72.5" y1="29.5" x2="55.5" y2="46.5"/>
+                            </g>
+                            <!-- Quadro -->
+                            <line x1="16" y1="38" x2="32" y2="14" stroke="#00e5ff" stroke-width="2.5"/>
+                            <line x1="32" y1="14" x2="48" y2="38" stroke="#00e5ff" stroke-width="2.5"/>
+                            <line x1="32" y1="14" x2="64" y2="38" stroke="#00e5ff" stroke-width="2"/>
+                            <line x1="16" y1="38" x2="48" y2="38" stroke="#00e5ff" stroke-width="2"/>
+                            <!-- Selim -->
+                            <line x1="32" y1="14" x2="28" y2="8" stroke="#aaa" stroke-width="2"/>
+                            <line x1="24" y1="8" x2="33" y2="8" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
+                            <!-- Guidao -->
+                            <line x1="48" y1="38" x2="52" y2="16" stroke="#aaa" stroke-width="2"/>
+                            <line x1="48" y1="16" x2="58" y2="16" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
+                            <!-- Pedivela -->
+                            <circle cx="32" cy="38" r="4" stroke="#ffaa00" stroke-width="1.5" fill="none"/>
+                            <g id="home-pedal" style="transform-origin:32px 38px;animation:homePedal 1.2s linear infinite">
+                                <line x1="32" y1="34" x2="32" y2="42" stroke="#ffaa00" stroke-width="2" stroke-linecap="round"/>
+                                <rect x="27" y="33" width="6" height="2" rx="1" fill="#ffaa00"/>
+                                <rect x="27" y="41" width="6" height="2" rx="1" fill="#ffaa00"/>
+                            </g>
+                            <!-- Corrente -->
+                            <line x1="16" y1="38" x2="32" y2="38" stroke="#666" stroke-width="1" stroke-dasharray="2,2"/>
+                        </svg>
+                    </div>
                     <div class="home-title">VELOTRACK</div>
                     <div class="home-sub">Ciclismo indoor com dados reais</div>
                 </div>
@@ -33,7 +74,7 @@
 
                 <div class="home-actions">
                     <button class="btn btn-primary home-btn" id="btn-connect">
-                        <span class="home-btn-icon">🚴</span>
+                        <span class="home-btn-icon">▶</span>
                         <div class="home-btn-text">
                             <span class="home-btn-title">INICIAR TREINO</span>
                             <span class="home-btn-sub">Conectar sensor e pedalar</span>
@@ -41,7 +82,7 @@
                     </button>
 
                     <button class="btn btn-outline home-btn" id="btn-ir-config">
-                        <span class="home-btn-icon">⚙️</span>
+                        <span class="home-btn-icon" style="font-size:18px;color:var(--muted);">✦</span>
                         <div class="home-btn-text">
                             <span class="home-btn-title">CONFIGURAÇÕES</span>
                             <span class="home-btn-sub">Pneu, peso, meta e URL</span>
@@ -49,7 +90,7 @@
                     </button>
 
                     <button class="btn btn-outline home-btn" id="btn-ver-historico-home">
-                        <span class="home-btn-icon">📊</span>
+                        <span class="home-btn-icon" style="font-size:18px;color:var(--muted);">≡</span>
                         <div class="home-btn-text">
                             <span class="home-btn-title">HISTÓRICO</span>
                             <span class="home-btn-sub">Ver treinos anteriores</span>
