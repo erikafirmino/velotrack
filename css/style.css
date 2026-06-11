@@ -95,25 +95,34 @@ header {
    CONNECT
 ══════════════════════════════════════════════════════════════ */
 #screen-connect {
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
-    gap: 24px;
-    text-align: center;
-    padding: 24px;
+    gap: 14px;
+    padding: 20px 20px 28px;
+    overflow-y: auto;
 }
 
-.connect-icon {
-    width: 110px;
-    height: 110px;
+/* Hero compacto */
+.connect-hero {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 4px 0;
+}
+
+.connect-icon-small {
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     border: 2px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    flex-shrink: 0;
 }
 
-.connect-icon::before {
+.connect-icon-small::before {
     content: '';
     position: absolute;
     inset: -2px;
@@ -125,41 +134,46 @@ header {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.connect-icon svg { width: 44px; height: 44px; color: var(--accent); }
+.connect-icon-small svg {
+    width: 22px;
+    height: 22px;
+    color: var(--accent);
+}
 
-.connect-title {
+.connect-title-small {
     font-family: var(--font-display);
-    font-size: 38px;
-    letter-spacing: 4px;
+    font-size: 26px;
+    letter-spacing: 3px;
     line-height: 1.1;
+    color: var(--text);
 }
 
-.connect-sub {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.6;
-    max-width: 280px;
-}
-
+/* Config grid 2 colunas */
 .config-card {
     width: 100%;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
-    padding: 18px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
+}
+
+.config-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
 }
 
 .config-card label {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: 2px;
     color: var(--muted);
     text-transform: uppercase;
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }
 
 input[type="number"],
