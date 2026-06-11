@@ -25,45 +25,40 @@
             <section id="screen-connect" class="screen active">
                 <div class="home-hero">
                     <div class="home-bike-icon">
-                        <svg viewBox="0 0 80 52" fill="none" xmlns="http://www.w3.org/2000/svg" width="90" height="60">
-                            <!-- Roda traseira -->
-                            <circle cx="16" cy="38" r="12" stroke="#aaa" stroke-width="2" fill="none"/>
-                            <circle cx="16" cy="38" r="3" fill="#888"/>
-                            <g id="home-spokes-rear" stroke="#888" stroke-width="1">
-                                <line x1="16" y1="26" x2="16" y2="50"/>
-                                <line x1="4"  y1="38" x2="28" y2="38"/>
-                                <line x1="7.5" y1="29.5" x2="24.5" y2="46.5"/>
-                                <line x1="24.5" y1="29.5" x2="7.5" y2="46.5"/>
+                        <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" width="130" height="130">
+                            <defs>
+                                <style>
+                                    @keyframes vtSpin    { from{transform:rotate(0deg)}   to{transform:rotate(360deg)} }
+                                    @keyframes vtSpinRev { from{transform:rotate(0deg)}   to{transform:rotate(-360deg)} }
+                                    .vt-ring1  { transform-origin:70px 70px; animation:vtSpin 5s linear infinite; }
+                                    .vt-ring2  { transform-origin:70px 70px; animation:vtSpinRev 8s linear infinite; }
+                                    .vt-orbit  { transform-origin:70px 70px; animation:vtSpin 2.5s linear infinite; }
+                                </style>
+                            </defs>
+                            <!-- Aro externo girando -->
+                            <g class="vt-ring1">
+                                <circle cx="70" cy="70" r="60" fill="none" stroke="#00e5ff" stroke-width="5"
+                                    stroke-dasharray="320 57" stroke-linecap="round"/>
                             </g>
-                            <!-- Roda dianteira -->
-                            <circle cx="64" cy="38" r="12" stroke="#aaa" stroke-width="2" fill="none"/>
-                            <circle cx="64" cy="38" r="3" fill="#888"/>
-                            <g id="home-spokes-front" stroke="#888" stroke-width="1">
-                                <line x1="64" y1="26" x2="64" y2="50"/>
-                                <line x1="52" y1="38" x2="76" y2="38"/>
-                                <line x1="55.5" y1="29.5" x2="72.5" y2="46.5"/>
-                                <line x1="72.5" y1="29.5" x2="55.5" y2="46.5"/>
+                            <!-- Aro interno girando ao contrário -->
+                            <g class="vt-ring2">
+                                <circle cx="70" cy="70" r="45" fill="none" stroke="#00b8cc" stroke-width="3"
+                                    stroke-dasharray="195 88" stroke-linecap="round" opacity="0.6"/>
                             </g>
-                            <!-- Quadro -->
-                            <line x1="16" y1="38" x2="32" y2="14" stroke="#00e5ff" stroke-width="2.5"/>
-                            <line x1="32" y1="14" x2="48" y2="38" stroke="#00e5ff" stroke-width="2.5"/>
-                            <line x1="32" y1="14" x2="64" y2="38" stroke="#00e5ff" stroke-width="2"/>
-                            <line x1="16" y1="38" x2="48" y2="38" stroke="#00e5ff" stroke-width="2"/>
-                            <!-- Selim -->
-                            <line x1="32" y1="14" x2="28" y2="8" stroke="#aaa" stroke-width="2"/>
-                            <line x1="24" y1="8" x2="33" y2="8" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
-                            <!-- Guidao -->
-                            <line x1="48" y1="38" x2="52" y2="16" stroke="#aaa" stroke-width="2"/>
-                            <line x1="48" y1="16" x2="58" y2="16" stroke="#aaa" stroke-width="2.5" stroke-linecap="round"/>
-                            <!-- Pedivela -->
-                            <circle cx="32" cy="38" r="4" stroke="#ffaa00" stroke-width="1.5" fill="none"/>
-                            <g id="home-pedal" style="transform-origin:32px 38px;animation:homePedal 1.2s linear infinite">
-                                <line x1="32" y1="34" x2="32" y2="42" stroke="#ffaa00" stroke-width="2" stroke-linecap="round"/>
-                                <rect x="27" y="33" width="6" height="2" rx="1" fill="#ffaa00"/>
-                                <rect x="27" y="41" width="6" height="2" rx="1" fill="#ffaa00"/>
+                            <!-- 3 raios fixos -->
+                            <g transform="translate(70,70)">
+                                <line x1="0"    y1="-34" x2="0"    y2="-12" stroke="#00e5ff" stroke-width="4" stroke-linecap="round"/>
+                                <line x1="-29.4" y1="17"  x2="-9.8" y2="5.7" stroke="#00e5ff" stroke-width="4" stroke-linecap="round"/>
+                                <line x1="29.4"  y1="17"  x2="9.8"  y2="5.7" stroke="#00e5ff" stroke-width="4" stroke-linecap="round"/>
+                                <!-- Hub -->
+                                <circle r="11" fill="#0a0a0f" stroke="#00e5ff" stroke-width="3.5"/>
+                                <circle r="5" fill="#00e5ff"/>
                             </g>
-                            <!-- Corrente -->
-                            <line x1="16" y1="38" x2="32" y2="38" stroke="#666" stroke-width="1" stroke-dasharray="2,2"/>
+                            <!-- Ponto laranja orbitando -->
+                            <g class="vt-orbit">
+                                <circle cx="70" cy="10" r="7" fill="#ff8c00"/>
+                                <circle cx="70" cy="10" r="11" fill="none" stroke="#ff8c00" stroke-width="1.5" opacity="0.4"/>
+                            </g>
                         </svg>
                     </div>
                     <div class="home-title">VELOTRACK</div>
