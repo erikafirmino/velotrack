@@ -76,6 +76,15 @@
                         </div>
                     </button>
 
+                    <!-- Spotify na home -->
+                    <button class="btn btn-outline home-btn home-btn-spotify" id="btn-spotify-home" onclick="Spotify.login()">
+                        <span class="home-btn-icon" style="color:#1db954;font-size:20px;">♪</span>
+                        <div class="home-btn-text">
+                            <span class="home-btn-title" id="spotify-home-title">CONECTAR SPOTIFY</span>
+                            <span class="home-btn-sub" id="spotify-home-sub">Ouvir música durante o treino</span>
+                        </div>
+                    </button>
+
                     <button class="btn btn-outline home-btn" id="btn-ir-config">
                         <span class="home-btn-icon" style="font-size:18px;color:var(--muted);">✦</span>
                         <div class="home-btn-text">
@@ -286,8 +295,8 @@
 
                     <!-- Spotify Player -->
                     <div class="spotify-wrap">
-                        <!-- Botão de login -->
-                        <button class="spotify-login-btn" id="spotify-login-btn" onclick="Spotify.login()">
+                        <!-- Login feito na home -->
+                        <button class="spotify-login-btn" id="spotify-login-btn" style="display:none;" onclick="Spotify.login()">
                             &#9654; CONECTAR SPOTIFY
                         </button>
 
