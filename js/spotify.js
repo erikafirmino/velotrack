@@ -42,8 +42,8 @@ const Spotify = {
         const verifier   = await this._generateCodeVerifier();
         const challenge  = await this._generateCodeChallenge(verifier);
         localStorage.setItem('vt_spotify_verifier', verifier);
-        // Salva a tela atual para restaurar após o redirect
-        localStorage.setItem('vt_spotify_return_screen', 'training');
+        // Salva para voltar à home após o OAuth
+        localStorage.setItem('vt_spotify_return_screen', 'connect');
 
         const params = new URLSearchParams({
             client_id:             this.CLIENT_ID,
@@ -247,11 +247,17 @@ const Spotify = {
     /* ── UI ── */
     _updateUI() {
         const wrap = document.getElementById('spotify-player');
-        if (!wrap) return;
-
-        if (this._isConnected) {
+        if (wrap && this._isConnected) {
             wrap.style.display = 'flex';
-            document.getElementById('spotify-login-btn').style.display = 'none';
+        }
+        // Atualiza botão da home
+        const homeBtn   = document.getElementById('btn-spotify-home');
+        const homeTitle = document.getElementById('spotify-home-title');
+        const homeSub   = document.getElementById('spotify-home-sub');
+        if (homeBtn && this._isConnected) {
+            homeBtn.classList.add('conectado');
+            if (homeTitle) homeTitle.textContent = 'SPOTIFY CONECTADO';
+            if (homeSub)   homeSub.textContent   = 'Clique para reconectar';
         }
     },
 
@@ -301,12 +307,9 @@ const Spotify = {
                 const returnScreen = localStorage.getItem('vt_spotify_return_screen');
                 if (returnScreen) {
                     localStorage.removeItem('vt_spotify_return_screen');
-                    // Apenas navega para a tela — não reinicia o treino
                     setTimeout(() => {
-                        if (typeof showScreen === 'function') {
-                            showScreen(returnScreen);
-                        }
-                    }, 800);
+                        if (typeof showScreen === 'function') showScreen(returnScreen);
+                    }, 500);
                 }
             }
             return;
