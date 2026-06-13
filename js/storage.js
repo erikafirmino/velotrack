@@ -44,8 +44,18 @@ const Storage = {
         els.saveStatus.innerHTML = 'Enviando dados...';
 
         try {
+            // Usa exatamente os valores exibidos na tela do resumo
+            const payload = {
+                date:     state.result.date,
+                duration: state.result.duration,
+                distKm:   parseFloat($('sum-dist')?.textContent || state.result.distKm),
+                avgKmh:   parseFloat($('sum-avg')?.textContent  || state.result.avgKmh),
+                maxKmh:   parseFloat($('sum-max')?.textContent  || state.result.maxKmh),
+                revs:     state.result.revs,
+            };
+
             const params = new URLSearchParams();
-            params.append('payload', JSON.stringify(state.result));
+            params.append('payload', JSON.stringify(payload));
             await fetch(url, { method: 'POST', mode: 'no-cors', body: params });
 
             els.saveStatus.className = 'save-status saved';
