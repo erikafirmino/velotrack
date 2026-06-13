@@ -44,18 +44,21 @@ const Storage = {
         els.saveStatus.innerHTML = 'Enviando dados...';
 
         try {
-            // Lê exatamente os valores visíveis na tela do resumo
-            const distTela = parseFloat(($('sum-dist')?.textContent || '0').replace(',','.'));
-            const avgTela  = parseFloat(($('sum-avg')?.textContent  || '0').replace(',','.'));
-            const maxTela  = parseFloat(($('sum-max')?.textContent  || '0').replace(',','.'));
+            // Garante que distKm e avgKmh estao em km (nao metros)
+            // state.totalDistM esta em metros, distKm deve ser / 1000
+            const distKmFinal  = parseFloat((state.totalDistM / 1000).toFixed(3));
+            const elapsedSec   = (Date.now() - (state.startTime || Date.now()) - (state.pausedMs || 0)) / 1000;
+            const avgKmhFinal  = elapsedSec > 0
+                ? parseFloat((distKmFinal / (elapsedSec / 3600)).toFixed(1))
+                : parseFloat(state.result.avgKmh);
 
             const payload = {
                 date:     state.result.date,
                 duration: state.result.duration,
-                distKm:   isNaN(distTela) ? state.result.distKm : distTela,
-                avgKmh:   isNaN(avgTela)  ? state.result.avgKmh : avgTela,
-                maxKmh:   isNaN(maxTela)  ? state.result.maxKmh : maxTela,
-                revs:     state.result.revs,
+                distKm:   distKmFinal,
+                avgKmh:   avgKmhFinal,
+                maxKmh:   parseFloat(state.maxSpeedKmh.toFixed(1)),
+                revs:     state.totalRevs,
             };
 
             console.log('VeloTrack envio:', JSON.stringify(payload));
