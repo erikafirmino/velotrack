@@ -64,10 +64,20 @@ const Bluetooth = {
     /* ── Calcula velocidade e distância a partir dos deltas ── */
     processRevData(cumRevs, eventTime) {
         // Primeira leitura ou retomada do pause — apenas registra a referência
+        // Ignora as 2 primeiras leituras para descartar acúmulo inicial do sensor
         if (state.prevRevs === null || state._resumedFromPause) {
             state.prevRevs          = cumRevs;
             state.prevEventTime     = eventTime;
             state._resumedFromPause = false;
+            state._skipNextReading  = true; // ignora também a segunda leitura
+            return;
+        }
+
+        // Descarta segunda leitura (ainda pode ter delta grande)
+        if (state._skipNextReading) {
+            state._skipNextReading  = false;
+            state.prevRevs          = cumRevs;
+            state.prevEventTime     = eventTime;
             return;
         }
 
