@@ -43,7 +43,8 @@ const state = {
 
     // WakeLock
     wakeLock:         null,
-    _resumedFromPause: false,
+    _resumedFromPause:  false,
+    _skipNextReading:   false,
     _metaAtingida:     false,
     _recordeVelocidade: 0,
     _recordeDistancia:  0,
