@@ -400,6 +400,37 @@
                         <button class="btn btn-outline" id="btn-back-historico" style="width:auto;padding:8px 16px;font-size:14px;">← VOLTAR</button>
                     </div>
 
+                    <!-- Resumo semanal -->
+                    <div class="semanal-wrap">
+                        <div class="semanal-title">ESTA SEMANA</div>
+                        <div class="semanal-grid">
+                            <div>
+                                <div class="semanal-item-val" id="sem-treinos">0</div>
+                                <div class="semanal-item-lbl">TREINOS</div>
+                            </div>
+                            <div>
+                                <div class="semanal-item-val" id="sem-km">0.0</div>
+                                <div class="semanal-item-lbl">KM</div>
+                            </div>
+                            <div>
+                                <div class="semanal-item-val" id="sem-tempo">0h</div>
+                                <div class="semanal-item-lbl">TEMPO</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico de evolução -->
+                    <div class="evolucao-wrap">
+                        <div class="evolucao-header">
+                            <span class="evolucao-title">EVOLUÇÃO</span>
+                            <div class="evolucao-toggle">
+                                <button class="evolucao-btn active" id="btn-ev-dist" onclick="renderEvolucao('dist')">KM</button>
+                                <button class="evolucao-btn" id="btn-ev-vel" onclick="renderEvolucao('vel')">VEL</button>
+                            </div>
+                        </div>
+                        <canvas id="evolucao-canvas"></canvas>
+                    </div>
+
                     <!-- Cards de recordes -->
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                         <div class="summary-card">
