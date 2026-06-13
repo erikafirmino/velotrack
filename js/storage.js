@@ -44,15 +44,21 @@ const Storage = {
         els.saveStatus.innerHTML = 'Enviando dados...';
 
         try {
-            // Usa exatamente os valores exibidos na tela do resumo
+            // Lê exatamente os valores visíveis na tela do resumo
+            const distTela = parseFloat(($('sum-dist')?.textContent || '0').replace(',','.'));
+            const avgTela  = parseFloat(($('sum-avg')?.textContent  || '0').replace(',','.'));
+            const maxTela  = parseFloat(($('sum-max')?.textContent  || '0').replace(',','.'));
+
             const payload = {
                 date:     state.result.date,
                 duration: state.result.duration,
-                distKm:   parseFloat($('sum-dist')?.textContent || state.result.distKm),
-                avgKmh:   parseFloat($('sum-avg')?.textContent  || state.result.avgKmh),
-                maxKmh:   parseFloat($('sum-max')?.textContent  || state.result.maxKmh),
+                distKm:   isNaN(distTela) ? state.result.distKm : distTela,
+                avgKmh:   isNaN(avgTela)  ? state.result.avgKmh : avgTela,
+                maxKmh:   isNaN(maxTela)  ? state.result.maxKmh : maxTela,
                 revs:     state.result.revs,
             };
+
+            console.log('VeloTrack envio:', JSON.stringify(payload));
 
             const params = new URLSearchParams();
             params.append('payload', JSON.stringify(payload));
